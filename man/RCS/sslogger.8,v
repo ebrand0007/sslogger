@@ -1,0 +1,379 @@
+head	1.4;
+access;
+symbols;
+locks
+	ebrand:1.4; strict;
+comment	@# @;
+
+
+1.4
+date	2010.06.24.04.01.29;	author ebrand;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2010.02.15.01.12.56;	author ebrand;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2010.01.16.14.42.44;	author ebrand;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2009.07.10.00.55.51;	author ebrand;	state Exp;
+branches;
+next	;
+
+
+desc
+@before makeing unique and removing slog info
+@
+
+
+1.4
+log
+@updated sslogger.conf path
+@
+text
+@.\" Process this file with
+.\" groff -man -Tascii foo.1
+.\"
+.TH sslogger 8 "February 2009" Linux "User Manuals"
+.SH NAME
+sslogger \- execute a command or interactive shell, and record the output
+.SH SYNOPSIS
+sslogger  
+.br
+sslogger [-h] [-c command] 
+.SH DESCRIPTION
+sslogger is session keystroke logging utility and allows  permitted users to execute commands, or open interactive shells. When used in interactive session mode, sslogger records keystrokes in a special file. A tty is required for interactive sessions. 
+
+Two modes of logging are available, local logging and remote logging. Remote logging is performed through a secure TLS session. See the
+.B sslogger.conf
+manpage for details. A remote slogd server must configured for remote logging. 
+
+The local default keystroke log files are written to /var/log/slog/<hostname>-<user1>-<user2>.<date>.log. The  sreplay command is included to review session log files created via sslogger, creating an audit trail of all actions performed by users. The keep_local_logs config setting can be set to remove the local log after successful transfer to the remote slogd server.
+
+sslogger also provides the ability to run in command mode in which a command can be executed. This allows sslogger to be used within a script in non-interactive script. When running this mode, stdin is closed.
+
+When used in combination with slog and sudo, privileged user escalation can be controlled and audited by creating standard sudo rules.
+
+By default, sslogger will change to the users home directory before executing a shell or command. Use the -h flag to remain in the current working directory.  
+
+All commands and interactive sessions write an entry to the local syslog.
+
+.SH OPTIONS
+.B sslogger
+accepts the following command line options:
+.br
+.TP
+.B -c command and args
+Execute "command and args" instead if interactive shell. Provides ability run sslogger within a script. non-interactive mode
+.TP
+.B -h
+Stay in current working directory, do not cd to USER home dir
+.TP
+.B -f
+Flush buffer on every newline
+.TP
+.B -q
+Suppress printing of SS logger start/finish information
+.TP
+.B -d
+Debug
+.br
+.TP
+The sreplay command can be used to sreplay recorded sessions
+.br
+.TP
+.B sreplay <filename>
+Replays interactive session identified by filename
+
+.SH RETURN VALUES
+In interactive mode, always exits 0.
+
+When run in a non-interactive mode, slog returns the value of the command being run.
+
+.SH FILES
+.I /etc/sslogger.d/sslogger.conf
+.RS
+Configuration file see man 
+.BR ssloggers.conf (5)
+.RE
+.I /etc/sudoers
+.RS
+Sudo Configuration file - see man 
+.BR sudoers (5)
+for details
+.RE
+.I /var/log/slog
+.RS
+Default directory in which sessions are logged
+.SH CONFIGURATION FILES
+.TP
+Sample sudoers entry to allow user user1 to run any command, or interactive shell as users: root,user2
+.br
+user1 ALL=(root,user2) NOPASSWD:/usr/bin/sslogger
+.TP
+/etc/sudoers entry to allow user1 to only run "ls" as user2
+.br
+user1 ALL=(testy2) NOPASSWD:/usr/bin/sslogger -c ls, /usr/bin/sslogger -c ls *
+.TP
+Sample sudoers entry to allow users in unix group wheel to run any sslogger command as root
+.br
+%wheel ALL=(root) NOPASSWD:/usr/bin/sslogger
+.TP
+Sample sudoers entry using sudoers groups for user1 and user2
+#Group Privileged access
+.br
+User_Alias SSERS = user1,user2
+.br
+Cmnd_Alias SL = /usr/bin/sslogger
+.br
+SSERS ALL = (root,user3) NOPASSWD: SL
+.br
+# user1 and user2 can now get an interactive root shell for root and user3
+.br
+# while logging all keystrokes
+.br
+.TP
+Configuration file /etc/sslogger.conf:
+see man 
+.BR ssloggers.conf(5) 
+for details
+
+
+# Log output of all commands, even non interactive (1 is true). Default 0
+.br
+log_all_cmds=0
+
+
+# Minimum Comment length in chars
+.br
+#an entry of 0 will skip reason for asking for a shell
+.br
+min_comment=10                                                  
+
+
+# Maximum Comment Length in chars written to syslog                
+.br
+#Comment Length in the session log file  is currently unlimited                                
+.br
+max_comment=60
+
+
+# To allow normal users replay access to log files they create, Set below to 1
+.br
+allow_user_replay=1
+
+
+# slogd server name or ip.
+.br
+# If commented out or empty remote log collection is disabled
+.br
+slogd_server=
+
+
+#slogd service port
+.br
+slogd_server_port=5556
+
+
+#slogd auth type. Must match slogd server tls_authtype
+.br
+# Current options are "x509" or "anon".
+.br
+# Setting to x509 requires x509 tls certs
+.br
+# to be generated and pushed to all clients. See the 
+.B mkSlogCerts
+command
+.br
+slogd_authtype=anon
+
+
+# When using a slogd server, and a sslogger session is over, and logs are
+.br
+# properly transferred to slogd server, delete the local log file.
+.br
+# Setting to 1 will enable keeping of all local log file.
+.br
+keep_local_logs=0
+
+
+# Policy for when a connection to a slogd server is unavailable or unexpectedly terminated
+.br
+# If set to 1, ssloger will terminate if connection is broken to slogd server
+.br
+#       and will die if it cannot connect to the remote slogd server at startup
+.br
+# If set to 0, local logging will be used when we can not contact remote server
+.br
+#       or when a network connection to the slogd server is broken
+.br
+require_remote_slogd=0
+
+
+.TP
+/etc/group:
+#To allow user2 to replay all session files, add user2 to the sslogger group
+.br
+sloggers:x:480:user2
+.SH EXAMPLES
+Note: the following examples assume suitable sudoers(5) entries.
+.TP
+$ sslogger
+.br
+- Obtains an interactive shell, and log all keystrokes
+.TP
+$ sslogger -c ls -l /root
+.br
+- Runs command, logs output if log_all_cmds=1 in sslogger.conf
+.TP
+$ slog -u user2
+.br
+- Obtains an interactive shell as another user.
+.TP
+$ slog -u user2 -h
+.br
+- Obtains an interactive shell as user2 whilst remaining in the current working directory.
+.TP
+$ sreplay <filename>
+.br
+- Replays an interactive session log (may require user to be added to sloggers group, see (CONFIGURATION FILES)
+.SH BUGS
+If you feel you have found a bug in sslogger, please submit a bug report at http://sslogger.sourceforge.net
+.SH SUPPORT
+Limited free support is available via the sslogger-users mailing list, see http://sslogger.sourceforge.net to subscribe or search the archives.
+.SH AUTHOR
+Edward Brand  <edbrand@@brandint.com>
+.SH SEE ALSO
+sslogger.conf(5)  slog(8) sreplay(8) slogd(8) sudo(8), suders(8), su(2)
+@
+
+
+1.3
+log
+@latest versions
+,
+@
+text
+@d61 1
+a61 1
+.I /etc/sslogger.conf
+@
+
+
+1.2
+log
+@before adding slogd
+@
+text
+@d12 7
+a18 1
+sslogger is session keystroke logging utility and allows  permitted users to execute commands, or open interactive shells. When used in interactive session mode, sslogger records keystrokes in a special file. A tty is required for interactive sessions
+a21 2
+Commands and interactive sessions write an entry to syslog. The default keystroke log files are written to /var/log/slog/<hostname>-<user1>-<user2>.<date>.log. The  sreplay command is included to review session log files created via sslogger, creating an audit trail of all actions performed by users.
+
+d26 2
+d63 2
+a64 1
+Configuration file
+d77 13
+a89 1
+Sample entry for user1 and user2 in /etc/sudoers:
+d104 6
+a109 4
+.br
+#
+.br
+#Log output of all commands, even non interactive (1 is true). Default 0
+d112 3
+a114 2
+.br
+#Minimum Comment length in chars
+d119 3
+a121 4
+.br
+# 
+.br
+#Maximum Comment Length in chars written to syslog                
+d126 2
+a127 1
+.br
+d132 48
+d182 1
+a182 1
+#To allow user2 to replay all session files, add user2 to the sloggers group
+d214 1
+a214 1
+slog(8) sreplay(8) sudo(8), suders(8), su(2)
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d6 1
+a6 1
+slog, sslogger \- execute a command as another user
+d8 1
+a8 1
+slog [-u user]
+d10 1
+a10 5
+slog [-u user] [-h] [command and args]
+.br
+sslogger [-h]
+.br
+sreplay <filename>
+d12 1
+a12 1
+sslogger is session keystroke logging utility and allows  permitted users to execute commands, or open interactive shells as the superuser or another user as specified by sudo rules in the sudoers file. When used in interactive session mode, sslogger records keystrokes in a special file. A tty is required for interactive sessions
+d14 1
+a14 1
+sslogger also provides the ability to run in command mode in which a command can be executed as another user. This allows sslogger to be used within a script in non-interactive script. When running this mode, stdin is closed.
+d18 3
+a20 1
+Privileged user escalation is set by standard sudo rules in sudoers file.
+d23 1
+a23 1
+.B slog
+d27 2
+a28 5
+.B -u <USER> 
+Run command or interactive shell as USER
+.TP
+.B -d
+Debug
+d36 5
+a40 2
+.B [command and args]
+Execute "command and args" instead if interactive shell. Provides ability run sslogger within a script. non-interactive mode
+d50 1
+a50 1
+In interactive mode, always exits 0. 
+d85 7
+d104 6
+a109 1
+max_comment=200
+d118 1
+a118 1
+$ slog
+d120 1
+a120 1
+- Obtains an interactive shell as root.
+d122 1
+a122 1
+$ slog ls -l /root
+d124 1
+a124 1
+- Runs a command as root, then exists.
+d144 1
+a144 1
+slog(8) sreplay(8) sslogger(8) sudo(8), suders(8), su(2)
+@

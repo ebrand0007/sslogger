@@ -1,0 +1,106 @@
+.\" Process this file with
+.\" groff -man -Tascii foo.1
+.\"
+.TH sslogger.conf 5 "February 2009" Linux "User Manuals"
+.SH NAME
+sslogger.conf \- sslogger(5) configuration file
+.SH DESCRIPTION
+      sslogger.conf  is a simple file containing  values to be read by 
+      sslogger\.  The syntax is simply as follows:
+
+              # comment
+              token=value
+
+       Note that blank lines are ignored, no whitespace are permitted before
+       the token, after the token, or before the value. Lines which begin with
+       a # are considered  comments and ignored.
+.SH FILES
+.I /etc/sslogger.d/sslogger.conf
+.RS
+Default Configuration File
+.RE
+.SH EXAMPLE CONFIGURATION FILE
+.TP
+Configuration file /etc/sslogger.d/sslogger.conf:
+.br
+# Log output of all commands, even non interactive (1 is true). Default 0
+.br
+log_all_cmds=0
+
+
+# Minimum Comment length in chars
+.br
+#an entry of 0 will skip reason for asking for a shell
+.br
+min_comment=10                                                  
+
+
+# Maximum Comment Length in chars written to syslog                
+.br
+#Comment Length in the session log file  is currently unlimited                                
+.br
+max_comment=60
+
+
+# To allow normal users replay access to log files they create, Set below to 1
+.br
+allow_user_replay=1
+
+
+# slogd server name or ip.
+.br
+# If commented out or empty remote log collection is disabled
+.br
+slogd_server=
+
+
+#slogd service port
+.br
+slogd_server_port=5556
+
+
+#slogd auth type. Must match slogd server tls_authtype
+.br
+# Current options are "x509" or "anon".
+.br
+# Setting to x509 requires x509 tls certs
+.br
+# to be generated and pushed to all clients. See the 
+.B mkSlogCerts
+command
+.br
+slogd_authtype=anon
+
+
+# When using a slogd server, and a sslogger session is over, and logs are
+.br
+# properly transferred to slogd server, delete the local log file.
+.br
+# Setting to 1 will enable keeping of all local log file.
+.br
+keep_local_logs=0
+
+
+# Policy for when a connection to a slogd server is unavailable or 
+.br
+# unexpectedly terminated. If set to 1, sslogger will terminate if 
+.br
+# connection is broken to slogd server, and session will die if it 
+.br
+# cannot connect to the remote slogd server at start up.
+.br
+# If set to 0, local logging will be used when we can not contact remote 
+.br
+# server or when a network connection to the slogd server is broken
+.br
+require_remote_slogd=0
+
+
+.SH BUGS
+If you feel you have found a bug in sslogger, please submit a bug report at http://sslogger.sourceforge.net
+.SH SUPPORT
+Limited free support is available via the sslogger-users mailing list, see http://sslogger.sourceforge.net to subscribe or search the archives.
+.SH AUTHOR
+Edward Brand  <edbrand@brandint.com>
+.SH SEE ALSO
+slog(8) sreplay(8) sslogger-slogd(8) mkSlogCerts(8) sudo(8), suders(8), su(2)

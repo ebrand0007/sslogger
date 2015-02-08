@@ -1,0 +1,25 @@
+head	1.1;
+access;
+symbols;
+locks
+	ebrand:1.1; strict;
+comment	@# @;
+
+
+1.1
+date	2010.02.15.01.11.52;	author ebrand;	state Exp;
+branches;
+next	;
+
+
+desc
+@before clean up to include in package
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@@

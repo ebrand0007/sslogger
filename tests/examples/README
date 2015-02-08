@@ -1,0 +1,20 @@
+tlstools_client.c: testing re-write of tlstools.c
+   gcc tlstools_client.c  -l gnutls -o slog-client2  -O0 -ggdb
+
+Status:
+  Integrated into ssloger-.93 version
+
+To compile on solaris install the following packages from sunfreeware and run:
+ expat-2.0.1-sol10-x86-local
+ glib-2.25.13-sol10-x86-local
+ gnutls-1.4.1-sol10-x86-local
+ libgcc-3.4.6-sol10-x86-local
+ libgcrypt-1.2.4-sol10-x86-local
+ libgpgerror-1.7-sol10-x86-local
+ libiconv-1.13.1-sol10-x86-local
+ libintl-3.4.0-sol10-x86-local
+ ncurses-5.7-sol10-x86-local
+ openssl-1.0.0a-sol10-x86-local
+ readline-5.2-sol10-x86-local
+ zlib-1.2.5-sol10-x86-local
+

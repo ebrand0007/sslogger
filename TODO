@@ -1,0 +1,43 @@
+
+sreplay: 
+  Add the watch option, to review live recordings..
+  implement find and reverse find
+  Ability to show line numbers
+
+sslogger:
+  Rewind file and send to slog server and commit to log directory
+  when -c option: Dup2 on stderr and dump to logfile
+     use fork and openpty to capture stderr
+  update logrotate to use olddir directive
+    Thinking all files should go to localhost, but change logrotate` to gzip them after 1 mos. and delete after 2 montyhs
+  need to generate a list of files somewhere that were not transferred to slogd server, to transfer later.
+    to be uses with slog
+  X -  add -l option to force logging with -c <command>
+    to be used with rslog
+  X Print remotLogID to stdout so rslog clients cans see it. !!!
+  Cleannup comments
+ 
+slog
+  posible add -e passed to sudo to preserver current environment
+    Or add user paths
+  X add -r <reason> flag
+    to be uses with rslog
+  X -  add -l option to force logging with -c <command>
+    to be used with rslog
+
+slogd
+  create slogd.log file
+  X When slogd.log is missing, or permissions whacked, clients hang....
+  Clients not in DNS get missing field in logfilename, need to use IP?
+  X Add forked pid to log  
+
+manpages:
+  remove ebrand@brandint.com and replace with sslogger@sourceforge.com
+ 
+mkCerts
+  document, cleanup
+
+
+#GDB: gcc -D LC_ALL -D LC_NUMERIC -DHAVE_LIBUTIL -lutil sslogger.c -l gnutls -o sslogger tlstools_client1.c -O0 -ggdb
+
+

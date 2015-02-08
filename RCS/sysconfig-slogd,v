@@ -1,0 +1,39 @@
+head	1.1;
+access;
+symbols;
+locks
+	ebrand:1.1; strict;
+comment	@# @;
+
+
+1.1
+date	2010.02.15.01.53.00;	author ebrand;	state Exp;
+branches;
+next	;
+
+
+desc
+@.92 release
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@# slogd-.91 config file
+
+#Opt args:
+#  -d 		run as daemon
+#  -v <1-9>	debug level
+#  -p <file>	pid file 
+#  -c <file>	config file
+
+
+USER=slogger
+SLOG_PIDFILE=/var/run/slogd/slogd.pid
+SLOGD_ARGS="-d -c /etc/slogd/slogd.conf -p $SLOG_PIDFILE"
+
+
+@

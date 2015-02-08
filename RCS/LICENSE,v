@@ -1,4 +1,28 @@
-                    GNU GENERAL PUBLIC LICENSE
+head	1.1;
+access;
+symbols;
+locks
+	ebrand:1.1; strict;
+comment	@# @;
+
+
+1.1
+date	2010.02.15.01.32.53;	author ebrand;	state Exp;
+branches;
+next	;
+
+
+desc
+@.92 release
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@                    GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 
  Copyright (C) 2007 Free Software Foundation, Inc. <http://fsf.org/>
@@ -672,3 +696,4 @@ may consider it more useful to permit linking proprietary applications with
 the library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.  But first, please read
 <http://www.gnu.org/philosophy/why-not-lgpl.html>.
+@

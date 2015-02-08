@@ -1,0 +1,20 @@
+/var/log/slog/*/*/slog-*.log {
+    compress
+    delaycompress
+    #monthly
+    #keep old logs for 2 years (720 days)
+    maxage 720
+    notifempty
+    missingok
+}
+
+"/var/log/slog/slod.log" {
+   # keep 2 years logs by default
+   rotate 24
+   monthly
+   missingok
+   notifempty
+   nocompress
+   create 644 slogger sloggers
+}
+

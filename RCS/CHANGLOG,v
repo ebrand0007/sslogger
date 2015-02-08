@@ -1,0 +1,51 @@
+head	1.1;
+access;
+symbols;
+locks
+	ebrand:1.1; strict;
+comment	@# @;
+
+
+1.1
+date	2010.02.15.01.32.24;	author ebrand;	state Exp;
+branches;
+next	;
+
+
+desc
+@.92 release
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@Ver .91       Dec 29 2009 E. Brand
+		- Added slogd tls server to recieve logs over tls session
+		- Updated man pages
+		- Makefile now uses $(man5dir)
+
+Ver 9-46:     July 7 2009 E. Brand
+		- updated man pages and cmd help
+		- enabled find in sreplay
+Ver 09-40:    July 5 2009 E brand
+		- Added checks to slog.c for null options after -c
+                - set slCmd to /0 on initial assignment
+                - split ssloger man page to ssloger, slog and sreplay
+                - Changed default permission for of log dir to allow normal users read access
+Ver 0.9-0.26: Mar 27 2009 Ed Brand
+		- Added my_sleep to replay function
+Ver 0.9-0.25: Mar 26 2009 Ed Brand
+		- Change replay command to more interactive and more user friendy. 
+		- Updated Man Page to reflect New options in replay
+Ver 0.9-0.24: 
+		- quoted command and shell in logfiles; fixed ';' after as:
+Ver 0.9-0.23: 
+		- fixed segfault when running non interactive
+Ver 0.0-0.17: 
+		- changed logCmd sub to enable wacking of syslog messages
+Ver 0.9-0.15: 
+		- modified sl to accept -c commands without quotes
+@

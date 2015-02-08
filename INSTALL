@@ -1,0 +1,35 @@
+Linux:
+  make
+  make install
+
+Solaris:
+  make sun
+  export VERSION=0.98.12 (needs to match config.h:VERSION)
+  make install_sun
+  add local user:group slogger:sloggers to system
+  chown slogger:sloggers /usr/bin/sslogger
+  chmod 6555 /usr/bin/sslogger
+  chown slogger:sloggers /usr/bin/slog
+  mkdir /var/log/slog
+  chmod 0775 /var/log/slog/
+  chown slogger:sloggers /var/log/slog
+
+Solaris Notes:
+ gcc was used from the companion CD 
+ installd the following packages from sunfreeware: 
+   expat-2.0.1-sol10-x86-local
+   glib-2.25.13-sol10-x86-local
+   gnutls-1.4.1-sol10-x86-local
+   libgcc-3.4.6-sol10-x86-local
+   libgcrypt-1.2.4-sol10-x86-local
+   libgpgerror-1.7-sol10-x86-local
+   libiconv-1.13.1-sol10-x86-local
+   libintl-3.4.0-sol10-x86-local
+   ncurses-5.7-sol10-x86-local
+   readline-5.2-sol10-x86-local
+   zlib-1.2.5-sol10-x86-local
+  Running requires sudo-1.7.4p4-sol10
+
+#After insall use set the system lib path: crle -l /lib:/usr/lib:/usr/local/lib -s /lib/secure:/usr/lib/secure:/usr/local/lib/secure
+ And upadate the PATH in /etc/default/login
+

@@ -1,0 +1,399 @@
+head	1.4;
+access;
+symbols;
+locks
+	ebrand:1.4; strict;
+comment	@# @;
+
+
+1.4
+date	2010.06.25.13.01.36;	author ebrand;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2010.06.24.22.10.35;	author ebrand;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2010.05.16.18.51.26;	author ebrand;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2010.05.15.12.32.36;	author ebrand;	state Exp;
+branches;
+next	;
+
+
+desc
+@original release
+@
+
+
+1.4
+log
+@before adding printing Slogd server and filename
+@
+text
+@#!/bin/bash
+
+#TODO: - figure a way to use RSLOG_PASSWD for ssh passwd
+#      - display remote logserver and remotelog id on command
+#      - exit valure is wrong on cmd success
+#      - instead of slog, use sudo [-u $USER]  sslogger -l
+#           until slog can take -l and -r options
+
+# trap keyboard interrupt (control-c)
+trap control_c SIGINT
+
+SSH_OPTS="-o ConnectTimeout=15"
+
+DATE=`date +"%Y.%m.%d_%T"`
+RSLOG_SERVERS="localhost"
+RSLOG_ODIR=/tmp
+RSLOG_LOG=$RSLOG_ODIR/rslog-$DATE.log
+PORT=22
+DEBUG=0
+
+#set the defaut remote user to root
+RSLOG_USER="root"
+
+
+control_c()
+# run if user hits control-c
+{
+  $SETCOLOR_NORMAL
+  exit 1
+}
+
+function color {
+    RES_COL=60
+    MOVE_TO_COL="echo -en \\033[${RES_COL}G"
+    SETCOLOR_GREEN="echo -en \\033[1;32m"
+    SETCOLOR_RED="echo -en \\033[1;31m"
+    SETCOLOR_MAGENTA="echo -en \\033[0;35m"
+    SETCOLOR_NORMAL="echo -en \\033[0;39m"
+}
+
+function nocolor {
+    MOVE_TO_COL=
+    SETCOLOR_GREEN=
+    SETCOLOR_RED=
+    SETCOLOR_MAGENTA=
+    SETCOLOR_YELLOW=
+    SETCOLOR_NORMAL=
+}
+
+
+
+function usage {
+  echo "-s <server1,server2,...> -u <remote_slog_user> [-r "Reason for runnung cmd"] [--show-output] [--nocolor] [-p port] [-P pasword] [-o <output dir>] -c cmd and args"
+  echo "  notes: -c cmd and args must be last"
+  echo "         User is responsible for escaping pipes and things:  like \|, etc"
+}
+
+
+if [ $# -lt 1 ]
+then
+  usage
+  exit 1
+fi
+
+
+function runSlog {
+  
+  SERVER=$1
+  [ -z "$SERVER" ] && return 1 ##TODO usage
+  
+  [ $DEBUG -gt 0 ] && echo "RSLOG_USER=$RSLOG_USER"
+  [ $DEBUG -gt 0 ] && echo "RSLOG_PASSWD=$RSLOG_PASSWD"
+  [ $DEBUG -gt 0 ] && echo "RSLOG_SERVER=$SERVER"
+  [ $DEBUG -gt 0 ] && echo "RSLOG_CMD=$RSLOG_CMD"
+  [ $DEBUG -gt 0 ] && echo "RSLOG_ODIR=$RSLOG_ODIR"
+  [ $DEBUG -gt 0 ] && echo "SWOW_OUTPUT=$SHOW_OUTPUT"
+
+
+  # Run remote connamd?
+  if [ -n "$RSLOG_CMD"  ] 
+  then
+    #TODO: -l and -r options for slog
+    #CMD="$SERVER slog -u $RSLOG_USER $RSLOG_CMD"
+    #CMD="-p $PORT -t $SERVER sudo -u $RSLOG_USER sslogger -l -c \"$RSLOG_CMD\""
+    CMD="-p $PORT -t $SSH_OPTS $SERVER sudo -u $RSLOG_USER sslogger -l $REASON -c \"$RSLOG_CMD\""
+    
+    
+    #Dump output of CMD to log since running non interactive
+    echo >> $RSLOG_LOG
+    if [ $DEBUG -gt 0 ]; then 
+      echo  "rslog running \"$CMD\" on $SERVER: " >> $RSLOG_LOG
+    else
+      echo  "rslog running on $SERVER: " >> $RSLOG_LOG
+    fi
+
+
+    #TODO: Tmp hook for slogd info
+    echo "  slogdServer:" >> $RSLOG_LOG
+    echo "  slogdLogID:" >> $RSLOG_LOG
+    echo "  remoteLog:" >> $RSLOG_LOG
+
+    # dump all output to log only
+    # TODO: we have to close stdin "< /dev/null" when running ssh non interactive
+    $SETCOLOR_MAGENTA
+    ssh $CMD > $RSLOG_ODIR/$SERVER-$DATE.log 2>&1 #< /dev/null
+    exitVal=$?
+    $SETCOLOR_NORMAL
+   
+    echo -ne "rslog result of cmd on $SERVER:" 
+    echo -ne "rslog result of cmd on $SERVER:"  >> $RSLOG_LOG
+    # echo success/failure
+    if [ $exitVal -eq 0 ] 
+    then
+      $MOVE_TO_COL
+      echo -ne "["
+      $SETCOLOR_GREEN
+      echo -ne "OK"
+      $SETCOLOR_NORMAL
+      echo "]"
+      #and append to rslog file
+      echo "[OK]" >> $RSLOG_LOG
+    else 
+      $MOVE_TO_COL
+      echo -ne "["
+      $SETCOLOR_RED
+      echo -ne "FAILURE"
+      $SETCOLOR_NORMAL
+      echo  "]"
+      echo "  Logfile: $RSLOG_ODIR/$SERVER-$DATE.log" $RSLOG_LOG
+      cat $RSLOG_ODIR/$SERVER-$DATE.log | sed 's/^/  /g'
+
+      #and append to rslog file
+      echo "[FAILURE]" >> $RSLOG_LOG
+      echo "  Logfile: $RSLOG_ODIR/$SERVER-$DATE.log" $RSLOG_LOG >> $RSLOG_LOG
+      cat $RSLOG_ODIR/$SERVER-$DATE.log | sed 's/^/  /g' >> $RSLOG_LOG
+      
+    fi
+    if [ ! -z "$SHOW_OUTPUT" ] && [ $exitVal -eq 0 ]; then
+     cat $RSLOG_ODIR/$SERVER-$DATE.log | sed 's/^/  /g' >> $RSLOG_LOG
+    fi
+    return $exitVal
+
+
+  # Run interactive session, force ssh to assign a tty
+  else
+    #CMD="-p $PORT -t $SSH_OPT $SERVER  slog -u $RSLOG_USER $RSLOG_CMD"
+    CMD="-p $PORT -t $SSH_OPTS $SERVER sudo -u $RSLOG_USER sslogger -l $REASON"
+    [ $DEBUG -gt 0 ] && echo "Running \"$CMD\" on $SERVER"
+    ssh $CMD
+    return $exitVal
+  fi
+
+  if [ $exitVal -eq 0 ]
+  then
+    rm -f $RSLOG_ODIR/$SERVER-$DATE.log
+  fi
+
+
+}
+
+
+#Main Code starts here
+
+#set default colors
+color
+
+while (($#)); do
+  ARG=$1
+  shift;
+  case "$ARG" in
+     '-u') 
+       RSLOG_USER=$1 
+       shift
+       ;;  
+     '-p')
+       RSLOG_PASSWD=$1;
+       shift
+       ;;
+     '-P')
+       PORT=$1;
+       shift;
+       ;;
+     '-s')
+       RSLOG_SERVERS=$1
+       shift
+       ;;
+     '-d')
+       if [ $# -gt 0 ]
+       then
+         DEBUG=$1
+         shift
+       fi
+       ;;
+     '-o')
+       RSLOG_ODIR=$1
+       shift
+       ;;
+     '-r')
+       REASON="-r \"$1\""
+       shift
+       ;;
+     '--show-output')
+       SHOW_OUTPUT="true"
+       ;;
+     '--nocolor')
+       nocolor
+       ;;
+     '-c')
+       while (($#)); do 
+         if [ -z "$RSLOG_CMD" ]
+         then
+           RSLOG_CMD=$1
+         else
+           RSLOG_CMD="$RSLOG_CMD $1";
+         fi
+         shift
+       done
+       ;;
+     *)
+       usage
+       exit 1
+       ;;
+    esac
+
+done
+
+#if [ -z "$RSLOG_USER" -o -z "$RSLOG_PASSWD" -o -z  "$RSLOG_SERVERS" ]
+if [ -z "$RSLOG_USER"  -o -z  "$RSLOG_SERVERS" ]
+then
+  usage
+  exit 1
+fi 
+
+if [ -n "$RSLOG_CMD" ]
+then
+  echo "Rslog logfile: $RSLOG_LOG"
+  echo
+fi
+
+if echo $RSLOG_SERVERS |  grep ',' >/dev/null 
+then
+  #run slog on multiple servers
+  SERVERS=`echo $RSLOG_SERVERS | sed 's/,/ /g'`
+  for i in $SERVERS
+  do
+    runSlog $i
+    #[ -n "$SHOW_OUTPUT" ] && echo
+  done
+else
+   #We were only passed one server
+   runSlog $RSLOG_SERVERS
+fi
+
+@
+
+
+1.3
+log
+@before moving to using -r "reason"
+@
+text
+@d53 1
+a53 1
+  echo "-s <server1,server2,...> -u <remote_slog_user> [--show-output] [--nocolor] [-p port] [-P pasword] [-o <output dir>] -c cmd and args"
+d85 1
+a85 1
+    CMD="-p $PORT -t $SSH_OPTS $SERVER sudo -u $RSLOG_USER sslogger -c \"$RSLOG_CMD\""
+d146 2
+a147 1
+    CMD="-p $PORT -t $SSH_OPT $SERVER  slog -u $RSLOG_USER $RSLOG_CMD"
+d198 4
+@
+
+
+1.2
+log
+@working version
+@
+text
+@d54 2
+a55 1
+  echo "  note: -c cmd and args must be last"
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d2 12
+d17 2
+d24 27
+a50 1
+#TODO: figure a way to use RSLOG_PASSWD for ssh passwd
+d53 1
+a53 1
+  echo "-s <server1,server2,...> -u <remote_slog_user> [--show-output] [-p pasword] [-o <output dir>] -c cmd and args"
+a76 8
+  if [ -z "$RSLOG_CMD" ]
+  then
+    #force ssh to assign a tty
+    CMD="$SERVER -t slog -u $RSLOG_USER $RSLOG_CMD"
+  else
+    CMD="$SERVER slog -u $RSLOG_USER $RSLOG_CMD"
+  fi
+
+d78 1
+a78 3
+  [ $DEBUG -gt 0 ] && echo running: ssh $CMD
+  
+  #if [ -z "$SHOW_OUTPUT" -a -n "$RSLOG_CMD"  ] 
+d81 6
+a86 1
+    CMD="$SERVER slog -u $RSLOG_USER $RSLOG_CMD"
+d88 6
+a93 1
+    echo -ne "Running \"$CMD\" on $SERVER: "
+d96 15
+a110 15
+
+    #todo: echo success/failure
+      #then cat log file if --show-output1
+    if [ -z "$SHOW_OUTPUT" ]
+    then
+      # dump all output to log only
+      # we have to close stdin "< /dev/null" when running ssh non interactive
+      ssh $CMD > $RSLOG_ODIR/$SERVER-$DATE.log 2>&1 < /dev/null
+      exitVal=$?
+    else
+      #dump output to log and stdout
+      # we have to close stdin "< /dev/null" when running ssh non interactive
+      cat /dev/null | ssh $CMD 2>&1 | tee $RSLOG_ODIR/$SERVER-$DATE.log 
+      exitVal=$?
+    fi
+d113 8
+a120 1
+      echo "success"
+d122 17
+a138 1
+      echo "failure. Check logfile: $RSLOG_ODIR/$SERVER-$DATE.log"
+d143 1
+a143 2
+
+
+d145 1
+a145 2
+    #interactive session, force ssh to assign a tty
+    CMD="$SERVER -t slog -u $RSLOG_USER $RSLOG_CMD"
+d150 7
+d160 5
+d177 4
+d198 4
+a201 1
+     ;;
+d228 5
+d241 1
+a241 1
+    [ -n "$SHOW_OUTPUT" ] && echo
+@

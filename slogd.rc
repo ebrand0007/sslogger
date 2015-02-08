@@ -1,0 +1,103 @@
+#!/bin/bash
+#
+# slogd         Secure log daemon server for sslogger
+#
+# Author:	Ed Brand <edbrand@brandint.com>
+#
+# chkconfig:    - 97 03
+#
+# description:  Secure log daemon server for sslogger
+#
+# processname:  slogd
+# config: /etc/sslogger.d/sslogger-slogd.conf
+# pidfile: /var/run/sslogger/sslogger-slogd.pid
+#
+
+
+### BEGIN INIT INFO
+# Provides: sslogger-slogd
+# Required-Start: $local_fs $network $syslog
+# Required-Stop: $local_fs $syslog
+# Should-Start: $syslog
+# Should-Stop: $network $syslog
+# Default-Stop: 0 1 6
+# Short-Description: Secure log daemon server for sslogger
+# Description:       Secure log daemon server for sslogger
+#                    This service starts up the OpenSSH server daemon.
+### END INIT INFO
+
+# Check that we're a priviledged user
+#TODO: [ `id -u` = 0 ] || exit 0
+
+
+prog="sslogger-slogd"
+config="/etc/sysconfig/sslogger-slogd"
+
+# source function library
+. /etc/rc.d/init.d/functions
+
+[ -e ${config} ] && . ${config}
+
+RETVAL=0
+
+start() {
+        echo -n $"Starting $prog: "
+	if [ ! -e /var/log/slog/slogd.log ]; then
+		touch /var/log/slog/slogd.log
+		chown $S_USER.$S_GROUP /var/log/slog/slogd.log
+	fi
+        daemon --user=$S_USER /usr/sbin/$prog $SLOGD_ARGS
+        RETVAL=$?
+        echo
+        [ $RETVAL -eq 0 ] && touch /var/lock/subsys/sslogger-slogd
+}
+
+stop() {
+        echo -n $"Stopping $prog: "
+        killproc -p $SLOG_PIDFILE $prog
+        echo
+        [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/sslogger-slogd
+}
+
+restart() {
+        stop
+        start
+}
+
+rh_status() {
+	# run checks to determine if the service is running or use generic status
+	status -p $SLOG_PIDFILE $prog
+}
+
+rh_status_q() {
+	rh_status >/dev/null 2>&1
+}
+
+
+case "$1" in
+  start)
+        rh_status_q && exit 0
+        start
+        ;;
+  stop)
+	rh_status_q || exit 0
+        stop
+        ;;
+  restart|reload|force-reload)
+        restart
+        ;;
+  status)
+        status -p $SLOG_PIDFILE $prog
+        #RETVAL=$?
+        ;;
+  condrestart|try-restart)
+ 	rh_status_q || exit 0
+ 	restart
+	;;
+  usage|*)
+	echo $"Usage: $0 {start|stop|status|restart|reload|usage}"
+        exit 1
+ 	;;
+esac
+
+exit #$RETVAL

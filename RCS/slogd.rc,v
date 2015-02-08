@@ -1,0 +1,151 @@
+head	1.2;
+access;
+symbols;
+locks
+	ebrand:1.2; strict;
+comment	@# @;
+
+
+1.2
+date	2010.05.09.22.28.07;	author ebrand;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2010.05.09.18.46.16;	author ebrand;	state Exp;
+branches;
+next	;
+
+
+desc
+@before moving goDaemon to after listen
+@
+
+
+1.2
+log
+@happy version
+@
+text
+@#!/bin/bash
+#
+# slogd         Secure log daemon server for sslogger
+#
+# Author:	Ed Brand <edbrand@@brandint.com>
+#
+# chkconfig:    345 97 03
+#
+# description:  Secure log daemon server for sslogger
+#
+# processname:  slogd
+# config: /etc/slogd/slogd.conf
+# pidfile: /var/run/slogd/slogd.pid
+#
+
+# Check that we're a priviledged user
+#TODO: [ `id -u` = 0 ] || exit 0
+
+
+prog="slogd"
+exec="/usr/sbin"
+config="/etc/sysconfig/$prog"
+
+# source function library
+. /etc/rc.d/init.d/functions
+
+[ -e ${config} ] && . ${config}
+
+RETVAL=0
+
+start() {
+        echo -n $"Starting $prog: "
+        daemon --user=$USER $exec/$prog $SLOGD_ARGS
+        RETVAL=$?
+        echo
+        [ $RETVAL -eq 0 ] && touch /var/lock/subsys/$prog
+}
+
+stop() {
+        echo -n $"Stopping $prog: "
+        killproc -p $SLOG_PIDFILE $prog
+        echo
+        [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/$prog
+}
+
+restart() {
+        stop
+        start
+}
+
+rh_status() {
+	# run checks to determine if the service is running or use generic status
+	status $prog
+}
+
+rh_status_q() {
+	rh_status >/dev/null 2>&1
+}
+
+
+case "$1" in
+  start)
+        rh_status_q && exit 0
+        start
+        ;;
+  stop)
+	rh_status_q || exit 0
+        stop
+        ;;
+  restart|reload|force-reload)
+        restart
+        ;;
+  status)
+        status -p $SLOG_PIDFILE $prog
+        #RETVAL=$?
+        ;;
+  condrestart|try-restart)
+ 	rh_status_q || exit 0
+ 	restart
+	;;
+  usage|*)
+	echo $"Usage: $0 {start|stop|status|restart|reload|usage}"
+        exit 1
+ 	;;
+esac
+
+exit #$RETVAL
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d20 3
+a22 1
+prog=slogd
+d27 1
+a27 1
+[ -e /etc/sysconfig/$prog ] && . /etc/sysconfig/$prog
+d33 1
+a33 1
+        daemon --user=$USER /usr/sbin/$prog $SLOGD_ARGS
+d51 10
+d63 1
+d67 1
+d70 1
+a70 1
+  restart|reload)
+d75 1
+a75 1
+        RETVAL=$?
+d77 6
+a82 2
+  *)
+        echo $"Usage: $0 {start|stop|status|restart|reload}"
+d84 1
+d87 1
+a87 1
+exit $RETVAL
+@

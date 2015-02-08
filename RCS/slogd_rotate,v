@@ -1,0 +1,57 @@
+head	1.1;
+access;
+symbols;
+locks
+	ebrand:1.1; strict;
+comment	@# @;
+
+
+1.1
+date	2010.02.15.01.51.52;	author ebrand;	state Exp;
+branches;
+next	;
+
+
+desc
+@.92 release
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@"/var/log/slog/slogd.log" {
+   # keep 2 years logs by default
+   rotate 24
+   monthly
+   missingok
+   notifempty
+   nocompress
+   prerotate
+       service slogd start
+   endscript
+   create 644 slogger sloggers
+   postrotate
+       service slogd start
+   endscript
+}
+
+/var/log/slog/*/*/slogd-*.log {
+    compress
+    delaycompress
+    monthly
+    maxage 720
+    notifempty
+    missingok
+}
+
+#/var/log/slog/*/*/slogd-*.gz {
+#    monthly
+#    #keep old logs for 2 years (720 days)
+#    notifempty
+#    maxage 720
+#    missingok
+#}
+@

@@ -1,0 +1,142 @@
+head	1.2;
+access;
+symbols;
+locks
+	root:1.2; strict;
+comment	@ * @;
+
+
+1.2
+date	2008.11.25.16.41.53;	author root;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2008.11.20.23.40.09;	author root;	state Exp;
+branches;
+next	;
+
+
+desc
+@before removeing hardcodded path to /opt/ss
+@
+
+
+1.2
+log
+@before removing execvp (path)
+@
+text
+@#include <stdio.h>
+#include <unistd.h>
+#include <string.h>
+#include <printf.h>
+#include <fcntl.h>
+#include <stdlib.h>
+
+#define TTY_BUFSIZE	1024
+char  *prog="ss"; //TODO: this should be in script.h
+//char *script="/opt/ss/bin/script"; //TODO: this should be in  config.h
+char *script="script"; //TODO: this should be in  config.h
+//char *sudo="/usr/bin/sudo"; //TODO" config.h
+char *sudo="sudo"; //TODO" config.h
+
+//functions
+void usage(void);
+int isShell=1; //default to spawn a shell
+char *user;
+
+
+void usage(void) {
+    fprintf(stderr, "Usage: %s -u <user>  cmd and args\n",prog);
+}
+
+
+int main(int argc, char* argv[]) {
+    int cmdc=argc+3; //nenth of new cms array
+    char *cmd[cmdc]; //add "sudo -u $user script -c 
+
+    if ( argc < 3 ) { //need -u $user
+        usage();
+        exit(EXIT_FAILURE);
+    }
+
+   //make sure we get -u passed
+   char *dashU=argv[1];
+   if ( strcmp(dashU,"-u") != 0)  {
+        usage();
+   }
+
+   //get the user
+   user=argv[2];
+    
+   if (argc > 3) { //we have -u <user> cmd...
+       isShell=0;
+       // init the cmd array
+       cmd[0]=sudo;
+       cmd[1]="-u";
+       cmd[2]=user;
+       cmd[3]=script;//new
+       cmd[4]="-c";//new
+       cmd[cmdc-1]=(char *)0; //terminate the cmd array
+       
+       printf("not a shell:%d\n",argc);
+
+       /* Place the command and args in cmd and args[] aray */
+       int startAt=3; //start at argv[2]
+       int cmdOffset=5;//new was 0
+       while ((startAt)<argc) { //start at
+           //printf("cmd %d:%s\n",cmdOffset,argv[startAt]);
+           cmd[cmdOffset]=argv[startAt]; //set the cmd array
+           cmdOffset++;
+           startAt++;
+       }
+       //TODO: Qoute the cmd array
+       
+       
+       /*int j=0;
+       int cmdStrLen=0;
+       for ( j=0;j<(cmdc-1);j++) {
+           printf("cmd[%d]: %s\n",j,cmd[j]);
+           cmdStrLen+=strlen(cmd[j])+1; //add space
+       }
+       printf ("strlen:%d\n\n",cmdStrLen);*/  //debugging tools
+       
+       if ( execvp(cmd[0],cmd)<0) {
+           //TODO: error trapping if command went bad
+           printf("Exec went bad\n");
+           exit(EXIT_FAILURE); 
+       }
+   }
+   
+   else { //run the shell
+       //printf("running sudo -u %s %s\n",user,script);
+       //optionally use -E to preserver environment
+       //Also must have SETENV: in sudoers
+       char *cmd[]={sudo,"-H","-u",user,script,(char *) 0};
+       if ( execvp(cmd[0],cmd)<0) {
+           //TODO: error trapping of return vals
+           printf("Exec went bad\n");
+           exit(EXIT_FAILURE);
+       }
+   }
+}
+
+//TODO: 
+    //log command local and syslog
+    //suid to write to /var/log/ss
+    //need a  config file for weither to log standalone cmsd through script
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d10 4
+a13 2
+char *script="/opt/ss/bin/script"; //TODO: this should be in  config.h
+char *sudo="/usr/bin/sudo"; //TODO" config.h
+d85 2
+@

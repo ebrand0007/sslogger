@@ -1,0 +1,101 @@
+.\" Process this file with
+.\" groff -man -Tascii foo.1
+.\"
+.TH slog 8 "February 2009" Linux "User Manuals"
+.SH NAME
+slog \- execute a command as another user
+.SH SYNOPSIS
+slog [-u user]
+.br
+slog [-u user] [-h] [command and args]
+.br
+.SH DESCRIPTION
+slog is a shortcut to running "sudo [-u $USER]  sslogger [cmd and args]"
+
+ssloger is session keystroke logging utility and allows  permitted users to execute commands, or open interactive shells as the superuser or another user. When used in interactive session mode, keystrokes are recorded in a special file. Privileged user escalation is set by standard sudo rules in sudoers file. A tty is required for interactive sessions
+
+See the manpage for 
+.B sslogger(8)
+for details
+
+.SH OPTIONS
+.B slog
+accepts the following command line options:
+.br
+.TP
+.B -u <USER> 
+Run command or interactive shell as USER. If not specified, the root user is assumed
+
+.TP
+.B [command and args]
+Execute "command and args" instead if interactive shell. Provides ability run sslogger within a script. non-interactive mode
+.TP
+.B -h
+Stay in current working directory, do not cd to USER home dir
+.TP
+.TP
+.B -d
+Debug
+.B -f
+Flush buffer on every newline
+.br
+.TP
+The sreplay command can be used to sreplay recorded sessions
+.br
+.TP
+.B sreplay <filename>
+Replays interactive session identified by filename
+
+.SH RETURN VALUES
+In interactive mode, always exits 0. 
+
+When run in a non-interactive mode, slog returns the value of the command being run.
+
+.SH FILES
+.I /etc/sslogger.d/sslogger.conf
+.RS
+Configuration file - see man 
+.B sslogger.conf(5)
+for details 
+.RE
+.I /etc/sudoers
+.RS
+Sudo Configuration file - see man 
+.BR sslogger(8)
+for example configurations and man
+.BR sudoers (5)
+for sudoer details
+.RE
+.I /var/log/slog
+.RS
+Default directory in which sessions are logged
+.SH EXAMPLES
+Note: the following examples assume suitable sudoers(5) entries.
+.TP
+$ slog
+.br
+- Obtains an interactive shell as root.
+.TP
+$ slog ls -l /root
+.br
+- Runs a command as root, then exists.
+.TP
+$ slog -u user2
+.br
+- Obtains an interactive shell as another user.
+.TP
+$ slog -u user2 -h
+.br
+- Obtains an interactive shell as user2 whilst remaining in the current working directory.
+.TP
+$ sreplay <filename>
+.br
+- Replays an interactive session log (may require user to be added to sloggers group, see (CONFIGURATION FILES)
+.SH BUGS
+If you feel you have found a bug in sslogger, please submit a bug report at http://sslogger.sourceforge.net
+.SH SUPPORT
+Limited free support is available via the sslogger-users mailing list, see http://sslogger.sourceforge.net to subscribe or search the archives.
+.SH AUTHOR
+Edward Brand  <edbrand@brandint.com>
+.SH SEE ALSO
+sslogger(8) ssloger.conf(5) sreplay(8) sudo(8), sudoers(8), su(2)

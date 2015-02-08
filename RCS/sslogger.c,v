@@ -1,0 +1,3244 @@
+head	1.35;
+access;
+symbols;
+locks
+	ebrand:1.35; strict;
+comment	@ * @;
+
+
+1.35
+date	2010.12.17.16.13.32;	author ebrand;	state Exp;
+branches;
+next	1.34;
+
+1.34
+date	2010.12.14.16.16.18;	author ebrand;	state Exp;
+branches;
+next	1.33;
+
+1.33
+date	2010.12.11.22.02.54;	author ebrand;	state Exp;
+branches;
+next	1.32;
+
+1.32
+date	2010.06.24.21.32.12;	author ebrand;	state Exp;
+branches;
+next	1.31;
+
+1.31
+date	2010.06.24.20.50.52;	author ebrand;	state Exp;
+branches;
+next	1.30;
+
+1.30
+date	2010.06.24.20.24.00;	author ebrand;	state Exp;
+branches;
+next	1.29;
+
+1.29
+date	2010.06.24.19.51.15;	author ebrand;	state Exp;
+branches;
+next	1.28;
+
+1.28
+date	2010.06.24.04.02.49;	author ebrand;	state Exp;
+branches;
+next	1.27;
+
+1.27
+date	2010.05.10.01.51.27;	author ebrand;	state Exp;
+branches;
+next	1.26;
+
+1.26
+date	2010.05.10.01.45.22;	author ebrand;	state Exp;
+branches;
+next	1.25;
+
+1.25
+date	2010.05.09.22.27.38;	author ebrand;	state Exp;
+branches;
+next	1.24;
+
+1.24
+date	2010.05.04.19.18.14;	author ebrand;	state Exp;
+branches;
+next	1.23;
+
+1.23
+date	2010.05.02.16.00.13;	author ebrand;	state Exp;
+branches;
+next	1.22;
+
+1.22
+date	2010.05.01.16.09.00;	author ebrand;	state Exp;
+branches;
+next	1.21;
+
+1.21
+date	2010.02.15.01.30.33;	author ebrand;	state Exp;
+branches;
+next	1.20;
+
+1.20
+date	2010.01.08.20.16.39;	author ebrand;	state Exp;
+branches;
+next	1.19;
+
+1.19
+date	2010.01.06.23.04.53;	author ebrand;	state Exp;
+branches;
+next	1.18;
+
+1.18
+date	2010.01.04.22.55.55;	author ebrand;	state Exp;
+branches;
+next	1.17;
+
+1.17
+date	2010.01.03.23.36.40;	author ebrand;	state Exp;
+branches;
+next	1.16;
+
+1.16
+date	2010.01.03.13.46.40;	author ebrand;	state Exp;
+branches;
+next	1.15;
+
+1.15
+date	2010.01.02.15.03.30;	author ebrand;	state Exp;
+branches;
+next	1.14;
+
+1.14
+date	2010.01.02.10.43.43;	author ebrand;	state Exp;
+branches;
+next	1.13;
+
+1.13
+date	2009.12.30.17.15.00;	author ebrand;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	2009.07.09.02.28.20;	author ebrand;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2009.07.09.01.54.04;	author ebrand;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2009.07.08.03.08.11;	author ebrand;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2009.07.08.02.34.06;	author ebrand;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2009.07.07.14.15.02;	author ebrand;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2009.07.05.20.24.12;	author ebrand;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2009.07.05.19.45.19;	author ebrand;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2009.03.05.22.43.02;	author root;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2009.03.05.11.58.45;	author root;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2009.03.03.12.02.31;	author root;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2009.03.01.18.07.28;	author root;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2009.02.26.22.29.10;	author root;	state Exp;
+branches;
+next	;
+
+
+desc
+@before adding  logfilr..
+@
+
+
+1.35
+log
+@.98.14 version release
+@
+text
+@/*
+* Copyright (c) 1980 Regents of the University of California.
+* All rights reserved.
+*
+* Redistribution and use in source and binary forms, with or without
+* modification, are permitted provided that the following conditions
+* are met:
+* 1. Redistributions of source code must retain the above copyright
+*    notice, this list of conditions and the following disclaimer.
+* 2. Redistributions in binary form must reproduce the above copyright
+*    notice, this list of conditions and the following disclaimer in the
+*    documentation and/or other materials provided with the distribution.
+* 3. All advertising materials mentioning features or use of this software
+*    must display the following acknowledgement:
+*	This product includes software developed by the University of
+*	California, Berkeley and its contributors.
+* 4. Neither the name of the University nor the names of its contributors
+*    may be used to endorse or promote products derived from this software
+*    without specific prior written permission.
+*
+* THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+* ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+* ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+* FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+* DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+* OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+* HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+* LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+* OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+* SUCH DAMAGE.
+*/
+
+/*
+* 1999-02-22 Arkadiusz Mi�kiewicz <misiek@@pld.ORG.PL>
+* - added Native Language Support
+*
+* 2000-07-30 Per Andreas Buer <per@@linpro.no> - added "q"-option
+*/
+
+/*
+* 2009-01-20 Ed Brand <ebrand@@brandint.com>
+*  - Modified to allow logging of keystrokes to a file
+*  - This file is based off a  modified version of the script.c 
+*    source code mentioned in the above Copyright
+*/
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <sys/types.h>
+#include <dirent.h>
+#include <sys/wait.h>
+#include <sys/stat.h>
+#include <termios.h>
+#include <sys/ioctl.h>
+#include <sys/time.h>
+#include <sys/file.h>
+#include <sys/signal.h>
+#include <syslog.h>
+#include <pwd.h>
+#include <errno.h>
+#include <locale.h>
+#include "nls.h"
+#include "config.h"
+
+#ifdef __linux__
+#include <unistd.h>
+#include <string.h>
+#include <paths.h>
+#endif 
+
+// fix for Solaris lack of paths.h
+#ifndef _PATH_BSHELL
+#define _PATH_BSHELL "/bin/bash"
+#endif
+
+#ifdef HAVE_LIBUTIL
+#include <pty.h>
+#endif
+
+#include "tlstools.h"
+#include <gnutls/gnutls.h>
+#include <gcrypt.h> /* for gcry_control */
+
+
+
+/* Prototypes */
+void finish(int);
+void done(void);
+void fail(void);
+void resize(int);
+void fixtty(void);
+void getmaster(void);
+void getslave(void);
+void doinput(void);
+void dooutput(void);
+void doshell(void);
+void do_setuid(void);
+void undo_setuid(void);
+void do_setgid(void);
+void undo_setgid(void);
+int read_conf(const char *, char **);
+int readConf(void);
+int logCmd2(char *, char *, char *,char *, char *);
+int createSlog(void);
+//int slogdConnect(char *);
+int slogdSend (void *slogMsg, int size);
+int mygetline(char *, int);
+
+char	*shell;
+FILE	*fscript;
+FILE    *pinput; // pipe command input
+int	master;
+int	slave;
+int	child;
+int	subchild;
+char	*fname; 
+char	*sfname; //short file name
+char	*comment;
+int commentLen=0; //length of comment after entering reason
+struct  passwd *upasswd;
+struct	termios tt;
+struct	winsize win;
+int	lb;
+int	l;
+#ifndef HAVE_LIBUTIL
+char	line[] = "/dev/ptyXX";
+#endif
+char	*cflg = NULL;
+int	debug=0;
+int	fflg = 0;
+int	hflg = 1;  //on by default
+int	qflg = 0;
+int	tflg = 0;
+char *ruser;
+static char *progname;
+const char *header=STRINGIFY(HEADER_LABEL);
+
+
+/* tlstools_client vars */
+gnutls_session_t session;
+long socket_sd; /* socket for tls session */
+char remote_logfile[MAX_REMOTE_LOGFILE_LEN]; /* logfile name returned by slogd server */
+
+
+char *slogd_server=NULL; /* set in readConf() */
+int require_remote_slogd; /* default value set in readConf()  */
+int keep_local_logs; /* default value set in readConf() */
+
+int slogdIsConnected=0; /* set to 1 when a conection is establihed */
+int slogdHasBeenConnected=0; /* set to 1 when a connection is established,
+                                Used to determine if client was ever connected */
+int slogdLostConnection=0; /* set to 1 when connection is lost */
+  /* TODO: above var no longer used, delete from code */
+
+/* defaults if no sslogger.conf */
+int log_all_cmds=0;
+int commentSize=100; //Max comment len //TODO: change name to max_comment to match config name
+int minCommentSize=0; //Min comment len //TODO: change name to min_comment to match config name
+int allow_user_replay=1; //allow user read their own logs
+
+#define LINE_LEN 100
+int read_conf( const char *key, char **value) {
+    //reads config_file looking first key, 
+    // sets  value if found, null otherwise
+    // returns -1 on FNF, 0 on keynot found, 1 on found
+    FILE *fp;
+    char line[LINE_LEN];
+    int end;
+    int keyLen=strlen(key);
+    const char *conf_file=STRINGIFY(CONF_FILE);
+    //if (*value!=NULL) free(*value);
+    fp = fopen(conf_file, "r");    
+    if (fp == NULL ) {
+        fprintf ( stderr,"Can't open config file: %s\n",conf_file);
+        return(-1); /* Can't open file */
+    }
+    
+    while (fgets(line, LINE_LEN, fp)) {
+        /* All options are key=value (no spaces)*/
+        if (line == NULL) continue;        
+        //if (debug) printf("line:%s",line);
+        if (strncmp(line, key, keyLen) == 0) { //we have a match //we have a match
+            end = strlen(line);
+            if (line[end-1] == '\n')
+                line[end-1] = 0; /* Remove trailing newline */
+            if (line[end-2] == '=') { /* Value is null, return 1; unhappy */
+                return 0; /*TODO: test and push this if to slogd-server */
+            }
+                
+        *value = strdup(line+keyLen+1); //add equal to  key=val
+        if (debug) printf("Found key:%s val:%s\n",key,*value);
+        if (fp!=NULL) fclose(fp);
+        return(1); //happy return
+        }
+    }
+    return 0; //unhappy return
+}
+
+/* Remember the effective and real UIDs. */
+static uid_t euid, ruid;
+static gid_t geuid,gruid;
+
+static void
+die_if_link(char *fn) {
+    struct stat s;
+    if (lstat(fn, &s) == 0 && (S_ISLNK(s.st_mode) || s.st_nlink > 1)) {
+        fprintf(stderr,
+            _("Warning: `%s' is a link.\n"
+            "Use `%s [options] %s' if you really "
+            "want to use it.\n"
+            "Sslogger not started.\n"),
+            fn, progname, fn);
+        exit(1);
+    }
+}
+
+/*
+* Stop extremely silly gcc complaint on %c:
+*  warning: `%c' yields only last 2 digits of year in some locales
+*/
+static void
+my_strftime(char *buf, size_t len, const char *fmt, const struct tm *tm) {
+    strftime(buf, len, fmt, tm);
+}
+
+int logCmd2(char *user, char *asUser, char *cmd, char *keyLogfname, char *reason) {
+    char *message;
+    char *logfname;
+    const char *log_dir=STRINGIFY(LOG_DIR);
+    const char *log_file=STRINGIFY(LOGFILE);
+    asprintf(&logfname,"%s/%s",log_dir,log_file);
+    do_setuid();
+    do_setgid();
+    FILE *log;
+    log=fopen(logfname,"a");
+    
+    if (log == NULL ) {
+        /* Can't open file */
+        if (debug) {
+            printf ("set euid: %d\n",euid); //suid user
+            printf ("real ruid: %d\n",ruid); //real user
+        }
+        undo_setuid();
+        undo_setgid();
+        fprintf ( stderr,"Error: can't open logfile: %s\n",logfname);
+        sleep(1);
+        return (0);
+        
+    }
+
+    /*time format for logfname*/
+    char outstr[200];
+    time_t t;
+    struct tm *tmp;
+    t = time(NULL);
+    tmp = localtime(&t);
+    if (tmp == NULL) {
+        perror("localtime");
+        exit(EXIT_FAILURE);
+    }
+    if (strftime(outstr, sizeof(outstr), "%F %H:%M:%S", tmp) == 0) {
+        fprintf(stderr, "strftime returned 0");
+        undo_setuid();
+        undo_setgid();
+        exit(EXIT_FAILURE);
+    } 
+  
+    if (debug) printf("opening log file %s\n",logfname);
+    int p=getpid(); //get the pid
+    fprintf(log,"%s %s[%d];",outstr,progname,p);
+    //fprintf(log," user:%s; as:%s; %s; logfile:%s; reason:%s\n",user,asUser,cmd,keyLogfname,reason);
+    fprintf(log," user:%s; as:%s; %s; logfile:%s; reason:%s\n",user,asUser,cmd,fname,reason);
+    fclose(log);
+ 
+    if (slogd_server!=NULL) {
+        /* Connect to slogd Server if defined in ssloger.conf */
+        char *slogMsg;
+        asprintf (&slogMsg,"clientLogFile:%s; %s[%d]; user:%s; as:%s; %s; reason:%s\n",fname,progname,p,user,asUser,cmd,reason);
+        if (debug>0) fprintf (stderr,"DEBUG: Connect string %s\n",slogMsg);
+        /* Connect to remode slogd server */
+        slogdIsConnected=slogdConnect(slogMsg); /* connect to slog server and set flag */
+    }
+
+    /* put slogdServer and SlogdLogID into local and remote log file */
+    if ((!qflg)) {
+        printf("SlogdServer:");
+	if (slogd_server!=NULL) printf ("%s\n",slogd_server);
+        printf("SlogdLogID: %s\n\n",remote_logfile);
+    }
+    if (fscript !=NULL) {
+      fputs("SlogdServer:",fscript);
+      if (slogd_server!=NULL)
+        fputs(slogd_server,fscript);
+      fputs("\r\n",fscript);
+      fputs("SlogdLogID:",fscript);
+      if (remote_logfile)
+        fputs(remote_logfile,fscript);
+      fputs("\r\n\r\n",fscript);
+    }
+    
+    if ( slogdIsConnected==1) {
+        if (debug > 0) fprintf (stderr,"DEBUG: Slogd connection establihed\n");
+        /* put slogdServer and SlogdLogID into local and remote log file */
+        slogdSend("SlogdServer:",strlen("SlogdServer:"));
+        if (debug > 0) fprintf (stderr,"DEBUG: 1");
+        slogdSend(slogd_server,strlen(slogd_server));
+        if (debug > 0) fprintf (stderr,"DEBUG: 1");
+        slogdSend("\r\n",strlen("\r\n"));
+        if (debug > 0) fprintf (stderr,"DEBUG: 1");
+        slogdSend("SlogdLogID:",strlen("SlogdLogID:"));
+        if (debug > 0) fprintf (stderr,"DEBUG: 1");
+        slogdSend(remote_logfile,strlen(remote_logfile));
+        if (debug > 0) fprintf (stderr,"DEBUG: 1");
+        slogdSend("\r\n\r\n",strlen("\r\n\r\n"));
+        /* flip slogdHasBeenConnected switch 
+            Used to set policy when a conection is dropped */
+        slogdHasBeenConnected=1;
+        if (debug > 0) fprintf (stderr,"DEBUG: remote session initalized\n");
+    }
+    else { /* Connection could not be established */
+        if (require_remote_slogd==1) {
+            if (slogd_server==NULL)
+                fprintf (stderr,"\nError: slogd_server is not set in sslogger.conf\n");
+            printf("\nA policy on this host requires sslogger to log to a remote slogd server.");
+            printf(" If you think you reached this message in error, ask your system administrator to modify the \"require_remote_slogd\" setting in sslogger.conf\n");
+            /* TODO: do we need to suid/sgid to ulink? */
+            unlink(fname);  /* remove the log file as it is empty */
+            exit(EXIT_FAILURE);
+        }
+        
+        else { /* can not establish slog connection, but require_remote_slogd==0 */
+            if (  require_remote_slogd==0) 
+              printf ("Sslogger continuing with local logging enabled.\n\n");
+        }
+    }
+ 
+    /* output reason why cmd or shell was invoked */
+    if (debug > 0) fprintf (stderr,"DEBUG: reason\n");
+    char *reasonMsg;
+    if ((!cflg))
+        asprintf(&reasonMsg,"Reason %s invoked interactive shell for %s: ",ruser,upasswd->pw_name);
+    else
+      asprintf(&reasonMsg,"Reason %s invoked cmd: \"%s\" for %s: ",ruser,cflg,upasswd->pw_name);
+    if (fscript!=NULL)
+        fprintf(fscript,"%s",reasonMsg);
+    slogdSend(reasonMsg,strlen(reasonMsg));
+    if (fscript!=NULL)
+        fputs(comment,fscript);
+    slogdSend(comment,strlen(comment));
+    asprintf(&reasonMsg,"\r\n\r\n");
+    slogdSend(reasonMsg,strlen(reasonMsg));
+    if (fscript!=NULL)
+        fputs("\r\n\r\n",fscript);
+    
+    if ((!cflg) && (strlen(reason) > commentSize) && (minCommentSize>0) ) { 
+        /* cflag - command to run (non interactive)
+        *  minCommentSize - the minimum comment len, if zero, there is no comment "(null)"
+        *  commentSize - maximum comment len for syslog comments, if zero no comment is required
+        *  reason - is the comment, (null) if commentSize=0
+        */
+        if (debug) {
+            printf("whacking comment len to:%d\n",commentSize);
+            printf("reason-length:%d syslogCommentSize:%d minCommentSize:%d\n",strlen(reason),commentSize,minCommentSize);
+        }
+        reason[commentSize]='\0';
+    }
+
+    asprintf(&message,"user:%s; as:%s; %s; logfile:%s; reason:%s\n",user,asUser,cmd,keyLogfname,reason);
+    //openlog (progname, LOG_PID,LOG_AUTHPRIV);
+    syslog(LOG_INFO,message);
+    //closelog();
+    undo_setuid();
+    undo_setgid();
+    return 1; //happy ending
+}
+
+
+/* Read slogger.conf an set global vars */
+int readConf (void) {
+    commentSize=MAXCOMMENTSIZE; //set default size
+    minCommentSize=MINCOMMENTSIZE; //dito
+    /* Get options from config file */
+    char *value;
+    int found=0;
+    found=read_conf("log_all_cmds",&value);
+    if (found==1) {
+        //printf ("found, result is: %s\n",value);
+        if (log_all_cmds==0) /* only overide if -l not passed on cmd line */
+          log_all_cmds=atoi(value); /* set to file value */
+    }
+    
+    found=read_conf("max_comment",&value);
+    if (found==1) {
+        //printf ("found, result is: %s\n",value);
+        commentSize=atoi(value);
+    }
+    
+    found=read_conf("min_comment",&value);
+    if (found==1) {
+          //printf ("found, result is: %s\n",value);
+        minCommentSize=atoi(value);
+    }
+
+    found=read_conf("allow_user_replay",&value);
+    if (found==1) {
+          //printf ("found, result is: %s\n",value);
+        allow_user_replay=atoi(value);
+    }
+
+    /* TODO: use below formay for above, and also slogd-server */
+    
+    /* slogd server */
+    found=read_conf("slogd_server",&value);
+    if (found==1) { /* we found the key, set the value */ 
+        slogd_server=strdup(value);
+        tlstools_client_server=slogd_server;
+    }
+    else {
+        tlstools_client_server=NULL;
+        slogd_server=NULL;
+    }
+    
+    /* tlsclient Auth type */
+    tlstools_client_authtype=TLSTOOLS_AUTH_ANON; /* set default to anon */
+    if (read_conf("slogd_authtype",&value)==1) { /* we found the key, set the value */ 
+        if (strcmp(value,"x509")==0)
+            tlstools_client_authtype=TLSTOOLS_AUTH_X509CERT;
+        if (strcmp(value,"anon")==0) 
+            tlstools_client_authtype=TLSTOOLS_AUTH_ANON;
+    }
+  
+    /* slogd_server_port */
+    tlstools_client_serverport=5556; /* default port */
+    if (read_conf("slogd_server_port",&value)==1) { /* we found the key, set the value */ 
+        tlstools_client_serverport=atoi(value);
+    }
+    
+    /* require_remote_slogd */
+    require_remote_slogd=0; /* set to default 0, not required */
+    if (read_conf("require_remote_slogd",&value)==1) { /* we found the key, set the value */ 
+        require_remote_slogd=atoi(value);
+    }
+
+    /* keep_local_logs */
+    keep_local_logs=1; /* set to default 1, always keep local logs */
+    if (read_conf("keep_local_logs",&value)==1) { /* we found the key, set the value */ 
+        keep_local_logs=atoi(value);
+    }
+
+/* TODO:  
+  hook to unlink local log file if   keep_local_logs=0 
+   
+*/
+
+    if (debug) printf("log_all_cmds=%d\n",log_all_cmds);
+    if (debug) printf("Max commentSize=%d\n",commentSize);
+    if (debug) printf("minCommentSize=%d\n",minCommentSize);
+    if (debug) printf("allow_user_replay=%d\n",allow_user_replay);
+    if (debug && tlstools_client_server!=NULL) printf("slogd_server=%s\n",tlstools_client_server); //slogd_server);
+    if (debug) printf("slogd_server_port=%d\n",tlstools_client_serverport );
+    if (debug) printf("tlstool_authtype=%d\n",tlstools_client_authtype);
+    if (debug) printf("require_remote_slogd=%d\n",require_remote_slogd);
+    if (debug) printf("keep_local_logs=%d\n",keep_local_logs );
+    
+    return 1; //happy read
+    
+}
+
+int 
+createSlog (void) {
+    /*Creates directories, sets permissions, and opens log file */
+    /* log name format in fname*/
+    char hname[MAXHOSTNAMELEN];
+    (void) gethostname(hname,sizeof(hname));
+    //get user
+    //ruser=getpwuid(geteuid())
+    ruser=getlogin(); 
+    if (ruser == NULL ) { //getlogin failed, try another method to get user ID
+        ruser=getenv("LOGNAME"); //sudo sets LOGNAME
+            if (ruser == NULL ) {
+                printf("Unable to determine user login id\n");
+                exit(EXIT_FAILURE);
+        }
+    }
+    time_t tvec;
+    char ldate[BUFSIZ];
+    tvec = time((time_t *)NULL);
+    if (debug) {
+        printf ("set euid: %d\n",euid); //suid user
+        printf ("real ruid: %d\n",ruid); //real user
+    }
+
+    //get the ruid passwd entry for the process
+    upasswd=getpwuid((uid_t)ruid);
+    if (!upasswd) {
+        printf("Unknown euid, exiting\n");
+        exit(EXIT_FAILURE);
+    }
+
+    if (! (upasswd->pw_shell && upasswd->pw_name && upasswd->pw_name[0] 
+              && upasswd->pw_dir && upasswd->pw_dir[0] && upasswd->pw_passwd)) {
+        printf("Bad password entry for uid:%d, exiting\n",ruid);
+        exit(EXIT_FAILURE);
+    }
+
+    shell=upasswd->pw_shell;
+    if (debug) printf("DEBUG: ruid:%s shell:%s\n",upasswd->pw_name,shell);
+    if (shell == NULL)
+        shell = _PATH_BSHELL;
+    setenv("SHELL",shell,1);
+
+    /* Only open fscript if we are going to write data to it.
+      1) if cflg - we have a cmd to execute
+         if log_all_cmds==1 -> open the file
+         else return 
+      2) interactive shell -> open the file
+    */
+    if (cflg) {
+        if  (log_all_cmds==0)  {// do not log cmd output
+        if (debug) printf("Logging cmd output: off\n");
+        fname="Logging cmd output disabled";
+        sfname="Logging cmd output disabled";
+        return 1;
+        }
+    }   
+    if (debug) printf("Logging cmd output: on\n");
+    // create and use LOG_DIR/sl/<year>/<month>/$sfname
+    char year[10];
+    char month[10];
+    char day[10];
+    char time[30];
+    //Get formats for Year, month, day, time
+    my_strftime(year, sizeof(year), "%Y", localtime(&tvec));
+    my_strftime(month, sizeof(month), "%m", localtime(&tvec));
+    my_strftime(day, sizeof(day), "%d", localtime(&tvec));
+    my_strftime(time, sizeof(time), "%H:%M:%S",localtime(&tvec));
+    
+    //Create the directory structure
+    const char *log_dir=STRINGIFY(LOG_DIR);
+    char *yeardir;
+    char *monthdir;
+    asprintf(&yeardir,"%s/%s",log_dir,year);
+    asprintf(&monthdir,"%s/%s",yeardir,month);
+
+    /* Verify we can write to yearpath */
+    mode_t  mode = CREATE_DIR_MODE;
+    mode_t old_umask = umask (002); /* allow group write bit for mkdir */
+    
+
+    do_setuid();
+    do_setgid();
+    DIR *ptrDir;
+    int e=0; //err number
+    /*if (euidaccess(yeardir,W_OK)==-1) { */
+    ptrDir=opendir(monthdir);
+    if (ptrDir==NULL) {
+        // cant write to yeardir, or doesn't exist 
+        e=errno; //get the error
+        //printf("Darn: got error e:%d ENOENT:%d\n",e,ENOENT);
+        if (e == ENOENT ) { //path doesn't exist, lets create
+            if (mkdir(yeardir,mode) != 0) {
+                fprintf(stderr,"Error: unable to create directory: %s\n",yeardir);
+                fprintf(stderr,"Verify it exists and owned by user:group %s:%s\n",STRINGIFY(DEF_USER),STRINGIFY(DEF_GROUP));
+                undo_setuid();
+                undo_setgid();
+                exit(EXIT_FAILURE);
+            }
+        }
+         else { //cant write to yearpath
+                
+                fprintf(stderr,"Error: unable to write to directory: %s\n",yeardir);
+                fprintf(stderr,"Verify it exists and owned by user:group %s:%s\n",STRINGIFY(DEF_USER),STRINGIFY(DEF_GROUP));
+
+                if (debug) {
+                    printf ("set euid: %d\n",euid); //suid user
+                    printf ("real ruid: %d\n",ruid); //real user
+                }
+
+                undo_setuid();
+                undo_setgid();
+                exit(EXIT_FAILURE);
+        }
+    } //end if we can write to yearpath
+    if (ptrDir!=NULL) closedir(ptrDir);
+
+    /* verify we can write to monthpath */
+    e=0;
+    /* if (euidaccess(monthdir,W_OK)==-1) { */
+    ptrDir=opendir(monthdir);
+    if (ptrDir==NULL) {
+        //cant write to monthpath, or doesn't exist...
+        e=errno; //get the error
+        if (e==ENOENT ) { //path doesn't exist, lets create
+            if (mkdir(monthdir,mode) != 0) {
+                fprintf(stderr,"Error: unable to create directory: %s\n",monthdir);
+                fprintf(stderr,"Verify it exists and owned by user:group %s:%s\n",STRINGIFY(DEF_USER),STRINGIFY(DEF_GROUP));
+                undo_setuid();
+                undo_setgid();
+                exit(EXIT_FAILURE);
+            }
+        }
+        else { //cant write to monthpath
+            fprintf(stderr,"Error: unable to write to directory: %s\n",monthdir);
+            fprintf(stderr,"Verify it exists and owned by user:group %s:%s\n",STRINGIFY(DEF_USER),STRINGIFY(DEF_GROUP));
+            undo_setuid();
+            undo_setgid();
+            exit(EXIT_FAILURE);
+        }
+    } //end if we can write to monthpath
+    if (ptrDir!=NULL) closedir(ptrDir);
+
+    /* reset the umask */
+    umask(old_umask);
+
+    //FileName formatting 
+    my_strftime(ldate, sizeof ldate, "%Y.%m.%d-%H:%M:%S.log", localtime(&tvec));
+    asprintf(&fname,"%s/slog-%s-%s-%s-%s",monthdir,hname,ruser,upasswd->pw_name,ldate);
+    asprintf(&sfname,"slog-%s-%s-%s-%s",hname,ruser,upasswd->pw_name,ldate);
+    /* end log name format */
+
+
+    /* undo setuid only if we want users to be able to read their own files */
+    if (allow_user_replay==1) 
+        undo_setuid();
+        /* this sets the uid to the users uid, not the euid */
+        
+    fscript = fopen(fname, "w"); //TODO: make this a read/write, and rewind the file when done
+    if (fscript == NULL) {
+        undo_setuid();
+        undo_setgid();
+        perror(fname);
+        fprintf(stderr,"Verify directory exists and owned by user:group %s:%s\n",STRINGIFY(DEF_USER),STRINGIFY(DEF_GROUP));
+        fail();
+    }
+    /* set read only to user and group */
+    if (fchmod(fileno(fscript),0440)!=0)
+        fprintf(stderr,"Warning: unable to change permissions on %s\n  Session log may not be secure\n",fname);
+    undo_setuid();
+    undo_setgid();
+    return 1;
+}
+
+
+/* Reads chars from stdin into s, returns length */
+int mygetline(char *s, int maxlen)
+{
+  int c, i, j;
+
+  for(i = 0, j = 0; (c = getchar())!=EOF && c != '\n'; ++i)
+  {
+    if(i < maxlen - 1)
+    {
+      s[j++] = c;
+    }
+  }
+  if(c == '\n')
+  {
+    if(i <= maxlen - 1)
+    {
+      s[j++] = c;
+    }
+    ++i;
+  }
+  s[j] = '\0';
+  return i;
+}
+
+
+/* sends log string to remote slog server
+    returns num bytes sent, -1 on err  */
+int
+slogdSend (void *slogMsg, int size) {
+    int sent;
+    if (slogdIsConnected==1) {
+        sent=tlstools_send(session,slogMsg,size); 
+        if (sent< 0 ) { /* unable to send message */
+            char *errmsg="*** lost connection to sogd server ***";
+            write(1, errmsg, strlen(errmsg));
+            if (fscript!=NULL) /* are we logging locally? */
+              fwrite(errmsg,1,strlen(errmsg),fscript); 
+            
+            slogdIsConnected=0; /* lost conection to slogd server */
+            slogdLostConnection=1;
+
+            /* policy for what happend if we loose connection to slogd server, 
+            *  terminate or keep local log to send later */
+            if (require_remote_slogd==1 ) {
+                printf("\r\n\r\n*** sslogger lost connection to slogd server:%s\r\n", tlstools_client_server);
+                printf("\r\nA policy on this host requires sslogger to be connected to a remote slogd server. ");
+                printf("If you think you reached this message in error, ask your system administrator to modify the \"require_remote_slogd\" setting in  sslogger.conf\r\n");
+                done(); /* quit */
+            }
+            else if (require_remote_slogd==0 ) {
+                errmsg="\r\n*** Sslogger continuing with local logging only\r\n";
+                write(1, errmsg, strlen(errmsg));
+                if (fscript!=NULL) /*  are logging locally? */
+                  fwrite(errmsg,1,strlen(errmsg),fscript);
+                
+            }
+            
+        return -1;
+        }
+
+        return sent; /* happy return */
+    }
+    return -1;     
+    
+    
+}
+
+/* slogd connect, returns 1 on succcess 0 on error */
+//int 
+slogdConnect (char *slogMsg) {
+    int err;
+    tlstools_client_debug=debug; /* set tlstools client debugging mode */
+    memset (&remote_logfile, '\0', sizeof (remote_logfile)); /* clear remote logfile name */
+    if (slogd_server==NULL)
+        return 0; /* no slogd server is configured */
+        
+    /* follow tlstoos_c setup here: */
+    /* Initialize tls */
+    session=(gnutls_session_t)tlstools_init();
+    if (session==NULL) {
+      fprintf(stderr,"Error: initalizing tlstools\n");
+      return 0; /* err out */
+    } 
+
+    if (debug > 0) fprintf(stderr,"DEBUG: tls initalized\n");
+        
+    /* Hello string to send slogd server */
+    static char *hi; 
+    /* TODO: add version to the below`*/
+    asprintf(&hi,"%s%s",header,slogMsg); /* Note slogMsg must end with \n */
+    if (debug > 0) fprintf(stderr,"DEBUG: hi=%s\n",hi);
+    
+    /* Connect to slogd serverr */
+    err=tlstools_connect(tlstools_client_server,tlstools_client_serverport,socket_sd,session,hi,remote_logfile,MAX_REMOTE_LOGFILE_LEN); 
+    if ( err<0 ) {
+        goto end;
+    }
+    else if (err ==0 ) {
+        return 1; /* error in tcp connect */   
+    }
+    if (debug > 0)
+      printf("DEBUG: slogd server returned logfile: %s\n",remote_logfile);
+    return 1; /* all is happy */
+    
+    end:
+      tlstools_end_session(socket_sd,session);
+      return 1;
+}
+
+/*
+* script -t prints time delays as floating point numbers
+* The example program (scriptreplay) that we provide to handle this
+* timing output is a perl script, and does not handle numbers in
+* locale format (not even when "use locale;" is added).
+* So, since these numbers are not for human consumption, it seems
+* easiest to set LC_NUMERIC here.
+*/
+
+int
+main(int argc, char **argv) {
+    /* unset suid bits */
+    ruid = getuid ();
+    gruid = getgid (); 
+    euid = geteuid ();
+    geuid = getegid ();
+    undo_setuid ();
+    undo_setgid();
+
+    extern int optind;
+    char *p;
+    int ch;
+ 
+    progname = argv[0];
+    if ((p = strrchr(progname, '/')) != NULL)
+        progname = p+1;
+
+
+    setlocale(LC_ALL, "");
+    setlocale(LC_NUMERIC, "C");	/* see comment above */
+    bindtextdomain(PACKAGE, LOCALEDIR);
+    textdomain(PACKAGE);
+
+    if (argc == 2) {
+        if (!strcmp(argv[1], "-V") || !strcmp(argv[1], "--version")) {
+            printf(_("%s (%s)\n"),
+                progname, STRINGIFY(VERSION));
+            return 0;
+        }
+    }
+
+    while ((ch = getopt(argc, argv, "c:r:fqthdl")) != -1)
+        switch((char)ch) {
+        case 'c':
+            cflg = optarg;
+            break;
+        case 'f':
+            fflg++;
+            break;
+        case 'q':
+            qflg++;
+            break;
+        case 't':
+            tflg++;
+            break;
+        case 'h': 
+            hflg=0; //default is true, cd to $HOME
+            break; 
+        case 'd' :
+            debug=1;
+            break;
+        case 'l' :
+            log_all_cmds=1;
+            break;
+        case 'r' : /* reason on cmd line */
+            comment=optarg;
+            if (debug) printf("DEBUG: reason: %s\n",comment);
+            break;
+        case '?':
+        default:
+            fprintf(stderr,
+                _("usage: %s [-f] [-q] [-h] [-d] [-l] [-r \"reason\"] [-c command]\n"),progname);
+            exit(1);
+        }
+    argc -= optind;
+    argv += optind;
+    readConf();
+    //Turn on flushing by default
+    //fflg++;
+       
+    tlstools_cert_file=CERT_FILE; /* from tlstools.h */
+    tlstools_key_file=KEY_FILE;   /* from tlstools.h */
+    tlstools_ca_file=CAFILE;      /* from tlstools.h */
+
+    /* Create local log file directory structure */   
+    /* and open fscript for writing */
+    if (debug) printf("DEBUG: creating local logfile\n");
+
+    createSlog();    
+    if (debug) printf("DEBUG: local logfile createted\n");
+    
+    getmaster();
+    if ((!qflg) && (!cflg) )
+        printf(_("Sslogger started, local logfile is %s\n"), fname);
+    
+    /* Scenario 1: execute a command and quit */
+    /* if we get a cmd string, just exec the cmd */
+    if (cflg) {
+        if (comment==NULL)
+         comment="(null)"; /* no comment specfied */
+        if  (log_all_cmds==0)  {// do not log cmd output
+            if (debug) printf("DEBUG: running execv cmd\n");
+            char *shname;
+            shname = strrchr(shell, '/'); //split at '/'
+            if (shname)
+                shname++;
+            else {
+                shname = shell;
+            }
+
+            //close stdin to avoid interactive shells
+            fclose(stdin);            
+            if (debug) printf("DEBUG: running exec: %s\n",cflg);
+            /* Send syslog command */
+            char *myCmd;
+            asprintf(&myCmd,"invoked_cmd:\"%s\"",cflg);
+            //comment below is "(null)" as we don't prompt prompt for a Reason
+            if (!logCmd2(ruser,upasswd->pw_name,myCmd,sfname,comment)) {
+                /*somting wong, cant open log for writing */
+                exit(EXIT_FAILURE);
+            }
+            /* tell the slogd server no output is comming from command */
+            char *slogdMsg="*** sslogger logging of command output disabled on client\r\n";
+            slogdSend(slogdMsg,strlen(slogdMsg));
+
+            /* Close the tls session */
+            if (slogdIsConnected==1)
+              gnutls_bye (session, GNUTLS_SHUT_RDWR);
+
+            /* cd to a users Home dir? */
+            if (hflg) {
+                if ( (chdir (upasswd->pw_dir)) != 0) {
+                    fprintf (stderr,"Warning: cannot change directory to %s\n", upasswd->pw_dir);
+                }
+            }
+              
+            usleep(10000);
+            execl(shell, shname, "-c", cflg, NULL);
+            //we should never get here
+            perror(shell);
+            exit(EXIT_FAILURE);
+        }
+        else { //log the output
+            if (debug) printf("running popen exec: %s\n",cflg);
+            /* Send syslog command */
+            char *myCmd;
+            asprintf(&myCmd,"invoked_cmd:\"%s\"",cflg);
+            
+            
+            //comment below is "(null)" as we don't prompt prompt for a Reason
+            if (!logCmd2(ruser,upasswd->pw_name,myCmd,sfname,comment)) {
+                /*somting wong, cant open log for writing */
+                exit(EXIT_FAILURE);
+            }
+
+            /* cd to a users Home dir? */
+            if (hflg) {
+                if ( (chdir (upasswd->pw_dir)) != 0) {
+                    fprintf (stderr,"Warning: cannot change directory to %s\n", upasswd->pw_dir);
+                }
+            }
+
+            //close stdin so user cant invoke interactive shell
+            fclose (stdin);
+                        
+            //Do popen here, read the output & set the exit code
+            char *cmd2run;
+            //asprintf(&cmd2run,"exec %s 2>&1",cflg);
+            asprintf(&cmd2run,"%s 2>&1",cflg);
+            pinput=popen(cflg,"r");
+            if (!pinput)
+            {
+                fprintf (stderr,
+                        "Unable to run command\n");
+                        exit(EXIT_FAILURE);
+            } 
+            usleep(10000);
+            //read_from_pipe
+            int c;
+            while ((c = fgetc (pinput)) != EOF) {
+                putchar (c);
+                if (c=='\n') { 
+			fputc('\r',fscript); //tty kludge
+			slogdSend("\r",sizeof(char));
+                }
+                fputc(c,fscript);
+                /* slogd hook to log all outut */
+                slogdSend(&c,sizeof(char)); 
+            }
+            int stat=0;
+            int exitVal=0;
+            stat=pclose(pinput);
+            exitVal=WEXITSTATUS(stat);
+            if (debug) fprintf(stderr,"Exit value for popen run cmd %d\n",exitVal);
+            usleep(300000); //give other thread chance to read
+            if (fscript!=NULL) fclose(fscript);
+            
+            /* TODO: close slogd client */
+            if (slogdIsConnected) //TODO: more to (session!=NULL)  
+               gnutls_bye (session, GNUTLS_SHUT_RDWR);
+            exit(exitVal);
+        }
+    }
+
+    /* Scenario 2: run a interactive session */
+    if (debug) fprintf(stderr,"DEBUG: running interactive session\n");
+    if  (! isatty(fileno(stdout))) {
+        perror("TTY required for interactive session\n");
+        exit(EXIT_FAILURE);
+    }
+
+    if (minCommentSize<1 ) {
+        if (debug) fprintf(stderr,"DEBUG: not prompting for comment\n");
+        if (comment==NULL) /* no comment on cmd line either */
+            comment="(none)";
+    }
+    else
+        {
+        if (debug) fprintf(stderr,"DEBUG: prompting for comment\n");
+        commentLen=0;
+        if (comment==NULL) { /* reason (-r) not passed on cmd line */
+          comment=malloc(MAX_HEADER_LEN * sizeof(char)); // allocate mem for the comment
+          memset (comment,'\0',MAX_HEADER_LEN); //null out comment
+        }
+        if (debug) fprintf(stderr,"DEBUG: comment: %s\n",comment);
+        if (debug) fprintf(stderr,"DEBUG: comment len: %d\n",strlen(comment));
+        while (1 && minCommentSize>0 && strlen(comment)==0 ) { //TODO delete ==NULL ) {
+            //if (comment!=NULL) free(comment);
+            printf ("\nReason for invoking thus interactive shell for %s:\n",upasswd->pw_name);
+            //getline(&comment,&commentLen,stdin);
+            commentLen=mygetline(comment,MAX_HEADER_LEN);
+            if (debug) printf ("DEBUG: comment len=%d len=%d\n",strlen(comment),commentLen);
+            if ( strlen(comment)>minCommentSize) break;
+            printf ("Minimum required comment length is: %d\n", minCommentSize);
+            memset (comment,'\0',MAX_HEADER_LEN); //null out comment
+        }
+        fputs("\n",stdout);
+        
+        commentLen=strlen(comment);
+        if (commentLen>0)  //whack off return char
+            if (comment[commentLen-1]=='\n') comment[commentLen-1]='\0';
+
+    }
+
+    /* send log messages to syslog & slogd server */
+    char *myCmd;
+    asprintf(&myCmd,"invoked_shell:\"%s\"",shell);
+    if (!logCmd2(ruser,upasswd->pw_name,myCmd,sfname,comment)) {
+        /*somting wong, cant open log for writing */
+        exit(EXIT_FAILURE);
+    }
+            
+    fflush(fscript);
+    fixtty();
+   
+    if (hflg) {
+      if ( (chdir (upasswd->pw_dir)) != 0) {
+          fprintf (stderr,"Warning: cannot change directory to %s\n", upasswd->pw_dir);
+      }
+    }
+
+    (void) signal(SIGCHLD, finish);
+    child = fork();
+    if (child < 0) {
+        perror("fork");
+        fail();
+    }
+    if (child == 0) {
+        subchild = child = fork();
+        if (child < 0) {
+            perror("fork");
+            fail();
+        }
+        if (child) {
+            dooutput();
+        }
+        else {
+            doshell();
+        }
+    } else
+        (void) signal(SIGWINCH, resize);
+    doinput();
+
+    return 0;
+}
+
+/* Restore the effective UID to its original value. */
+void
+do_setuid (void)
+{
+    int status;
+
+    // user bits
+    #ifdef _POSIX_SAVED_IDS
+    status = seteuid (euid);
+    #else
+    status = setreuid (ruid, euid);
+    #endif
+    if (status < 0) {
+        fprintf (stderr, "Couldn't set uid.\n");
+        exit (status);
+    }
+}
+
+/* Restore the effective GID to its original value. */
+void
+do_setgid (void)
+{
+    int status;
+    //group bits
+    #ifdef _POSIX_SAVED_IDS
+    status = setegid (geuid);
+    #else
+    status = setregid (gruid, geuid);
+    #endif
+    if (status < 0) {
+        fprintf (stderr, "Couldn't set uid.\n");
+        exit (status);
+    }
+
+    
+}
+
+/* Set the effective UID to the real UID. */
+void
+undo_setuid (void)
+{
+    int status;
+    //user bits
+    #ifdef _POSIX_SAVED_IDS
+    status = seteuid (ruid);
+    #else
+    status = setreuid (euid, ruid);
+    #endif
+    if (status < 0) {
+        fprintf (stderr, "Couldn't set uid.\n");
+        exit (status);
+    }
+}
+
+/* Set the effective GID to the real GID. */
+void
+undo_setgid (void)
+{
+    int status;
+    //group bits
+    #ifdef _POSIX_SAVED_IDS
+    status = setegid (gruid);
+    #else
+    status = setregid (geuid, gruid);
+    #endif
+    if (status < 0) {
+        fprintf (stderr, "Couldn't set uid.\n");
+        exit (status);
+    }
+
+ 
+}
+
+
+void
+doinput() {
+    register int cc;
+    char ibuf[BUFSIZ];
+    if (fscript!=NULL) 
+        (void) fclose(fscript);
+    while ((cc = read(0, ibuf, BUFSIZ)) > 0)
+        (void) write(master, ibuf, cc);
+    done();
+}
+
+#include <sys/wait.h>
+
+void
+finish(int dummy) {
+    int status;
+    register int pid;
+    register int die = 0;
+
+    register int cc;
+    time_t tvec;
+    char obuf[BUFSIZ];
+    struct timeval tv;
+    double oldtime=time(NULL), newtime;
+    tvec = time((time_t *)NULL);
+
+
+    while ((pid = wait3(&status, WNOHANG, NULL)) > 0) {
+        if (pid == child) {
+            die = 1;
+            //printf ("Child signal\n");
+            
+        }
+    }
+    if (die)
+        done();
+}
+
+void
+resize(int dummy) {
+    /* transmit window change information to the child */
+    (void) ioctl(0, TIOCGWINSZ, (char *)&win);
+    (void) ioctl(slave, TIOCSWINSZ, (char *)&win);
+
+    kill(child, SIGWINCH);
+}
+
+void
+dooutput() {
+    register int cc;
+    time_t tvec;
+    char obuf[BUFSIZ];
+    struct timeval tv;
+    double oldtime=time(NULL), newtime;
+
+    (void) close(0);
+#ifdef HAVE_LIBUTIL
+     (void) close(slave);
+#endif
+
+    tvec = time((time_t *)NULL);
+    my_strftime(obuf, sizeof obuf, "%c\r\n", localtime(&tvec));
+    fprintf(fscript, _("Sslogger started on %s"), obuf);
+    char *slogMsg;
+    asprintf(&slogMsg,"Sslogger started on %s", obuf);
+    /* send header to slogd server */
+    slogdSend(slogMsg,strlen(slogMsg));
+    
+    for (;;) {
+        if (tflg)
+            gettimeofday(&tv, NULL);
+        cc = read(master, obuf, sizeof (obuf));
+        if (cc <= 0)
+            break;
+        if (tflg) {
+            newtime = tv.tv_sec + (double) tv.tv_usec / 1000000;
+            fprintf(stderr, "%f %i\n", newtime - oldtime, cc);
+            oldtime = newtime;
+        }
+        /* cc is num of chars read_conf
+           obuf is buffer 
+        */
+        (void) write(1, obuf, cc);
+        (void) fwrite(obuf, 1, cc, fscript);
+        /* TODO: below wrong place? this is only writng to pty pairs? */
+        if (fflg)
+            (void) fflush(fscript);
+
+        if (slogdIsConnected==1) slogdSend(&obuf,cc); /* only send data if connected */
+
+        
+            }
+    done();
+}
+
+void
+doshell() {
+    char *shname;
+
+#if 0
+    int t;
+
+    t = open(_PATH_TTY, O_RDWR);
+    if (t >= 0) {
+        (void) ioctl(t, TIOCNOTTY, (char *)0);
+        (void) close(t);
+    }
+#endif
+
+    getslave();
+    (void) close(master);
+    if (fscript!=NULL) 
+        (void) fclose(fscript);
+    (void) dup2(slave, 0);
+    (void) dup2(slave, 1);
+    (void) dup2(slave, 2);
+    (void) close(slave);
+
+    shname = strrchr(shell, '/'); //split at '/'
+    if (shname)
+        shname++;
+    else
+        shname = shell;
+    usleep(10000);
+
+    /* TODO: slogd hook for header output */
+    
+    if (debug) printf ("DEBUG: execl %s - %s\n",shell, shname);
+    execl(shell, "-",(char *)NULL);
+    //we should never get here
+    perror(shell);
+    fail();
+}
+
+void
+fixtty() {
+    struct termios rtt;
+    rtt = tt;
+#ifdef __sun__
+    rtt.c_cc[VMIN] = 1;
+    rtt.c_cc[VTIME] = 1;
+    rtt.c_oflag &= ~OPOST;
+    //rtt.c_lflag &= ~(ICANON|ISIG|ECHO);
+    rtt.c_lflag &= ~(ICANON|ISIG|ECHO|IEXTEN|ECHONL);
+    rtt.c_iflag &= ~(INLCR|IGNCR|ICRNL|IUCLC|IXON); 
+
+#else
+    /* assume __linux__ */
+    cfmakeraw(&rtt);
+    rtt.c_lflag &= ~ECHO; 
+#endif
+
+    (void) tcsetattr(0, TCSAFLUSH, &rtt);
+}
+
+void
+fail() {
+
+    (void) kill(0, SIGTERM);
+    done();
+}
+
+void
+done() {
+    time_t tvec;
+    if (subchild) {
+        char buf[BUFSIZ];
+        if (!qflg) {
+            tvec = time((time_t *)NULL);
+            my_strftime(buf, sizeof buf, "%c\r\n", localtime(&tvec));
+            fprintf(fscript, _("\nSslogger done on %s"), buf);
+
+        }
+        printf ("\r\n");
+        /* Close local log file */
+        if (fscript!=NULL) { 
+            (void) fclose(fscript);
+            /* TODO: rewind file here and rewrite*/
+        }
+        sleep(1);
+        if (slogdIsConnected==1) {
+            char *slogMsg;
+            asprintf(&slogMsg,"\nSslogger done on %s", buf);
+            slogdSend(slogMsg,strlen(slogMsg));
+            /* Greacefully close the tls slogd connection */
+            gnutls_bye (session, GNUTLS_SHUT_RDWR);
+            if (keep_local_logs==0) {
+                printf ("\r\nSession logs successfully sent to slogd server: %s\r\n",slogd_server);
+                printf("Removing local log file: %s\r\n",fname);
+                /* TODO: may have to suid to remove */
+                unlink(fname);
+            }
+        }
+
+
+        (void) close(master);
+    } else {
+        (void) tcsetattr(0, TCSAFLUSH, &tt);
+        if (!qflg)
+            if (keep_local_logs==1) printf(_("Sslogger done, local log file is %s\r\n"), fname);
+        else printf(_("Sslogger done\r\n"));
+        //TODO: REMOVE fclose(fscript); /* TODO: test  close */
+        /* TODO: is this where we send slogserver happy end? */
+        /* TODO: test close of slogd client, or do we do this in finsh()?*/        
+        /*TODO: test remove local log files if log successfuly sent */
+        //if (keep_local_logs==0) unlink(fname);
+        
+        
+    }
+    exit(0);
+}
+
+void
+getmaster() {
+#ifdef HAVE_LIBUTIL
+    (void) tcgetattr(0, &tt);
+    (void) ioctl(0, TIOCGWINSZ, (char *)&win);
+    if (openpty(&master, &slave, NULL, &tt, &win) < 0) {
+        fprintf(stderr, _("openpty failed\n"));
+        fail();
+    }
+#else
+    char *pty, *bank, *cp;
+    struct stat stb;
+
+    pty = &line[strlen("/dev/ptyp")];
+    for (bank = "pqrs"; *bank; bank++) {
+        line[strlen("/dev/pty")] = *bank;
+        *pty = '0';
+        if (stat(line, &stb) < 0)
+            break;
+        for (cp = "0123456789abcdef"; *cp; cp++) {
+            *pty = *cp;
+            master = open(line, O_RDWR);
+            if (master >= 0) {
+                char *tp = &line[strlen("/dev/")];
+                int ok;
+
+                /* verify slave side is usable */
+                *tp = 't';
+                ok = access(line, R_OK|W_OK) == 0;
+                *tp = 'p';
+                if (ok) {
+                    (void) tcgetattr(0, &tt);
+                        (void) ioctl(0, TIOCGWINSZ,
+                        (char *)&win);
+                    return;
+                }
+                (void) close(master);
+            }
+        }
+    }
+    fprintf(stderr, _("Out of pty's\n"));
+    fail();
+#endif /* not HAVE_LIBUTIL */
+}
+
+void
+getslave() {
+#ifndef HAVE_LIBUTIL
+    line[strlen("/dev/")] = 't';
+    slave = open(line, O_RDWR);
+    if (slave < 0) {
+        perror(line);
+        fail();
+    }
+    (void) tcsetattr(slave, TCSAFLUSH, &tt);
+    (void) ioctl(slave, TIOCSWINSZ, (char *)&win);
+#endif
+    (void) setsid();
+    (void) ioctl(slave, TIOCSCTTY, 0);
+}
+@
+
+
+1.34
+log
+@0.98.10 version
+@
+text
+@d935 4
+a938 1
+                //if (c=='\n') fputc('\r',fscript); //tty kludge
+d994 1
+a994 1
+            comment[commentLen-1]='\0';
+@
+
+
+1.33
+log
+@.98 release
+@
+text
+@a83 2
+/* use pthread safe gcrypt */
+GCRY_THREAD_OPTION_PTHREAD_IMPL;
+d137 1
+a137 1
+
+a145 1
+
+d733 2
+a734 1
+    asprintf(&hi,"slogClient:%s",slogMsg); /* Note slogMsg must end with \n */
+d790 1
+a790 1
+                progname, VERSION);
+d1290 1
+a1290 1
+
+@
+
+
+1.32
+log
+@post ading -r reason flag
+@
+text
+@a48 1
+#include <paths.h>
+d51 1
+d69 1
+d72 5
+d110 1
+d283 1
+d290 2
+a291 1
+        printf("SlogdServer:%s\n",slogd_server);
+d306 1
+a306 1
+        if (debug > 0) fprintf (stderr,"Slogd connection establihed\n");
+d309 1
+d311 1
+d313 1
+d315 1
+d317 1
+d321 2
+a322 1
+        slogdHasBeenConnected=1; 
+d342 1
+d417 2
+a418 1
+    if (read_conf("slogd_server",&value)==1) { /* we found the key, set the value */ 
+d422 4
+d463 1
+a463 1
+    if (debug) printf("slogd_server=%s\n",slogd_server);
+d525 2
+d556 1
+d558 3
+a560 1
+    if (euidaccess(yeardir,W_OK)==-1) {
+d573 1
+a573 1
+        else { //cant write to yearpath
+d588 2
+d592 3
+a594 1
+    if (euidaccess(monthdir,W_OK)==-1) {
+d614 2
+d647 26
+d732 1
+a732 1
+    if (debug > 0) printf("tls initalized\n");
+d737 1
+d822 1
+d842 2
+d845 1
+d958 1
+d965 1
+d971 1
+d973 7
+a979 1
+        while (1 && minCommentSize>0 && comment==NULL ) {
+d982 2
+a983 1
+            getline(&comment,&commentLen,stdin);
+d987 1
+a1118 1
+
+d1250 8
+d1259 2
+a1260 1
+    rtt = tt;
+d1262 3
+a1264 1
+    rtt.c_lflag &= ~ECHO;
+@
+
+
+1.31
+log
+@post adding -r "reason" to sslogger.c
+@
+text
+@d280 1
+a280 1
+    /* put slogdServer and SlogdLogID into locif ((!qflg)al and remote log file */
+d298 1
+a298 1
+        /* embed slogd server and logID into slog file */
+d326 17
+d930 1
+a930 13
+      
+    char *reasonMsg;
+    asprintf(&reasonMsg,"Reason %s invoked interactive shell for: %s\r\n",ruser,upasswd->pw_name);
+    fprintf(fscript,"%s",reasonMsg);
+    slogdSend(reasonMsg,strlen(reasonMsg));
+    fputs(comment,fscript);
+    slogdSend(comment,strlen(comment));
+    asprintf(&reasonMsg,"\r\n");
+    fputs("\r\n",fscript);
+    /* slogd hook for output of reason */
+    slogdSend(reasonMsg,strlen(reasonMsg));
+    
+    
+@
+
+
+1.30
+log
+@after moving SlogdServer and Slogdfile to top of slog file
+@
+text
+@d721 1
+a721 1
+    while ((ch = getopt(argc, argv, "c:fqthdl")) != -1)
+d744 3
+d750 1
+a750 1
+                _("usage: %s [-f] [-q] [-h] [-d] [-l] [-c command]\n"),progname);
+d774 2
+d793 1
+a793 1
+            if (!logCmd2(ruser,upasswd->pw_name,myCmd,sfname,"(null)")) {
+d826 1
+a826 1
+            if (!logCmd2(ruser,upasswd->pw_name,myCmd,sfname,"(null)")) {
+d883 3
+a885 2
+    if (minCommentSize<1 ) { 
+        comment="(none)";
+d890 1
+a890 1
+        while (1 && minCommentSize>0 ) {
+d903 1
+a903 3
+        /*Below is the max number of chars allowed for the comment*/
+        /*  comment will be truncated */
+        //TODO: DELETE ME if (strlen(comment) > commentSize) comment[commentSize]=(char)0;
+@
+
+
+1.29
+log
+@before adding  -r "Reason" to cmd line options and moving display of slogdServer & slogdLogID
+@
+text
+@d276 1
+a276 3
+        
+        
+        /* Connect to remode slodserver */
+d280 16
+d298 7
+d760 2
+a761 1
+    /* Create local log file directory structure */    
+d835 1
+a835 23
+            
+            /* put RemoteLogId  and slogdServer in local and remote log file */
+            if (fscript !=NULL) {
+              fputs("SlogdServer:",fscript);
+              if (slogd_server!=NULL)
+                fputs(slogd_server,fscript);
+              fputs("\r\n",fscript);
+              fputs("SlogdLogID:",fscript);
+              if (remote_logfile)
+                fputs(remote_logfile,fscript);
+              fputs("\r\n\r\n",fscript);
+            }
+            if (slogdIsConnected==1) {
+              printf("SlogdServer:%s\n",slogd_server);
+              printf("SlogdLogID: %s\n\n",remote_logfile);
+              slogdSend("SlogdServer:",strlen("SlogdServer:"));
+              slogdSend(slogd_server,strlen(slogd_server));
+              slogdSend("\r\n",strlen("\r\n"));
+              slogdSend("SlogdLogID:",strlen("SlogdLogID:"));
+              slogdSend(remote_logfile,strlen(remote_logfile));
+              slogdSend("\r\n\r\n",strlen("\r\n\r\n"));
+            }
+            
+a908 22
+
+    /* put RemoteLogId  and slogdServer in local and remote log file */
+    if (fscript !=NULL) {
+        fputs("SlogdServer:",fscript);
+        if (slogd_server!=NULL)
+          fputs(slogd_server,fscript);
+        fputs("\r\n",fscript);
+        fputs("SlogdLogID:",fscript);
+        if (remote_logfile)
+          fputs(remote_logfile,fscript);
+        fputs("\r\n\r\n",fscript);
+    }
+    if (slogdIsConnected==1) {
+        printf("SlogdServer:%s\n",slogd_server);
+        printf("SlogdLogID: %s\n\n",remote_logfile);
+        slogdSend("SlogdServer:",strlen("SlogdServer:"));
+        slogdSend(slogd_server,strlen(slogd_server));
+        slogdSend("\r\n",strlen("\r\n"));
+        slogdSend("SlogdLogID:",strlen("SlogdLogID:"));
+        slogdSend(remote_logfile,strlen(remote_logfile));
+        slogdSend("\r\n\r\n",strlen("\r\n\r\n"));
+    }
+@
+
+
+1.28
+log
+@updated sslogger.conf path
+@
+text
+@d774 3
+a776 2
+            /* Close the tls session */ 
+            gnutls_bye (session, GNUTLS_SHUT_RDWR);
+d814 22
+a835 8
+            /* put RemoteLogId in local and remote log file */
+            fputs("RemoteLogID:",fscript);
+            fputs(remote_logfile,fscript);
+            fputs("\r\n\r\n",fscript);
+            slogdSend("RemoteLogID:",strlen("RemoteLogID:"));
+            slogdSend(remote_logfile,strlen(remote_logfile));
+            slogdSend("\r\n\r\n",strlen("\r\n\r\n"));
+           
+d866 2
+a867 1
+            gnutls_bye (session, GNUTLS_SHUT_RDWR);
+d910 22
+a931 7
+    /* put RemoteLogId in local and remote log file */
+    fputs("RemoteLogID:",fscript);
+    fputs(remote_logfile,fscript);
+    fputs("\r\n\r\n",fscript);
+    slogdSend("RemoteLogID:",strlen("RemoteLogID:"));
+    slogdSend(remote_logfile,strlen(remote_logfile));
+    slogdSend("\r\n\r\n",strlen("\r\n\r\n"));
+@
+
+
+1.27
+log
+@after displsying repoteLogID: cleanup, still upaing tlstool_client1.c.
+sslogger.c should be unaffected
+,
+@
+text
+@a281 2
+    printf ("RemoteLogID:%s\n\n",remote_logfile);
+
+d338 2
+a339 5
+        log_all_cmds=atoi(value);
+    }
+    else {
+        //printf ("Not found\n");
+        log_all_cmds=0; // set to not log all cmds
+d341 1
+d587 3
+a589 1
+            fwrite(errmsg,1,strlen(errmsg),fscript);
+d604 3
+a606 1
+                fwrite(errmsg,1,strlen(errmsg),fscript);
+d651 1
+a651 1
+      printf("DEBUG: slod server returned logfile: %s\n",remote_logfile);
+d700 1
+a700 1
+    while ((ch = getopt(argc, argv, "c:fqthd")) != -1)
+d720 3
+d726 1
+a726 1
+                _("usage: %s [-f] [-q] [-h] [-d] [-c command]\n"),progname);
+d812 9
+d894 7
+d911 2
+@
+
+
+1.26
+log
+@workig version before cleaning
+@
+text
+@d282 1
+a282 1
+    printf ("RemoteLog:%s\n",remote_logfile);
+@
+
+
+1.25
+log
+@happy version before getting remote log file.
+@
+text
+@d278 1
+a278 8
+//TODO: delete below afrer testing:
+//        gnutls_session_t slog_session;
+//        slog_session=tlstools_init();
+//        if (session==NULL) {
+//          fprintf(stderr,"Error: initalizing tlstools\n");
+//          return 1; /* err out */
+ //       }
+        /*TODO: below, see what slogdConnect returns */
+d282 2
+d285 1
+a285 1
+        if (debug > 0) fprintf (stderr,"SLOG connection establihed\n");
+a651 1
+
+@
+
+
+1.24
+log
+@working version before final code cleanup and committo koji
+@
+text
+@d133 1
+a133 1
+/*TODO: dtruct tlstools_client tlsclient; /* struct for slogd remote logging */
+d145 1
+a145 1
+//TODO:  delete char *slogd_authtype="anon";
+a580 1
+    /* TODO: move above file create mode to config.h or ssloger.conf */
+d586 2
+a587 1
+/* sends log string to remote slog server */
+a589 4
+    /* TODO: only send to slogd server if slogdserver is configured in conf file
+    Take into account what happens if network failure
+    TODO: Create lostSlogdServer flag, what about the hasbeenconnected flag?
+    */
+a590 3
+    
+    //if (slogdLostConnection==1) return -1;
+   
+a596 2
+            /* Terminste the tlstools session  */
+            /* TODO new code doesndt need thiss: tlstools_end_session(&tlsclient); */
+d600 1
+a600 1
+            /* TODO: policy for what happend if we loose connection to slogd server, 
+d633 2
+a634 1
+    /* TODO: follow tlstoos_c setup here: */
+d640 1
+a640 9
+    
+    /* Initialize tls an connect to server */
+    /* TODO: dete Old code 
+    if (init_tls_client(&tlsclient)!=0) {
+        fprintf(stderr,"Unable to inatalize tls conection to %s:%d\n",tlstools_client_server,tlstools_client_serverport);
+        return 0;
+    }
+    */
+    
+d642 1
+a642 2
+    
+    
+d647 1
+a647 1
+    /* new code to do connect */
+a657 26
+    
+    //Below old code:In above block when dow we send out message????
+    /* Hello string to send slogd server */
+//     int sent=tlstools_send(&tlsclient,hi,strlen(hi));
+//     if (sent!=strlen (hi)) {
+//         printf("Slogd handshake failed\n");
+//         //printf("TLS Hello Handshake failed: %s",gnutls_strerror(tlsclient.err));
+//         //tlstools_end_session(&tlsclient);
+//         return 0;
+//     }
+//     
+//     /* Read the "OK" back from the server */
+//     char buff_ok[4]; /* Read OK back from server */
+//     memset (&buff_ok,0,4);
+//     if  (tlstools_recv(&tlsclient,buff_ok,4) < 1) { /* Error */
+//         printf("TLS connect failed\n");
+//         //tlstools_end_session(&tlsclient);
+//         return 0;
+//     }
+// 
+//     /* deBUG printf("Read %s\n",buff_ok); */
+//     if (strcmp(buff_ok,"OK")!=0) {
+//         printf("Error in socket stream. Closing the connection:\n");
+//         //tlstools_end_session(&tlsclient);
+//         return 0;
+//     }
+a659 2
+    
+    /* TODO: heve to fine all other tlstools_end calls */
+d737 1
+a737 2
+   
+    
+d741 1
+a741 17
+    
+    
+/*TODO: delete below */    
+    /* Below segfaults if not in config file */
+//     if (slogd_server!=NULL) { /* slogd server found in config file */
+//         //         tlstools_client_server="bx4-rhel5";
+//         //tlstools_client_server=slogd_server;
+//         //tlstools_client_serverport=5556;
+//         //tlstools_client_authtype=TLSTOOLS_AUTH_ANON;
+//         //tlstools_client_authtype=TLSTOOLS_AUTH_X509CERT;
+//         tlsclient.debug=4;
+//         //tlstools_set_crl_file("/etc/funk");
+//         //tlstools_ca_file="/etc/slogd/fuvker";
+//         tlstools_cert_file="/etc/pki/slog/servercert.pem";
+//         tlstools_key_file="/etc/pki/slog/private/serverkey.pem";
+//     }
+    
+a778 2
+            
+            // TODO: new code, we dont need this? tlstools_end_session(&tlsclient);
+d833 2
+a834 2
+                /* TODO: slogd hook to log all outut */
+                slogdSend(&c,sizeof(char)); /* TODO ret <0 lost conection */
+a845 1
+            //TODO: new code, doiesnt need this tlstools_end_session(&tlsclient);
+a1094 1
+        /* TODO: test loosing connection to server */
+d1096 1
+a1096 32
+        //if ((slogdHasBeenConnected==1) && (slogdLostConnection==1)) {
+//         if (slogdLostConnection==1) {
+//             slogdLostConnection=0; /* reset once we process it */
+//             char *errmsg="*** out of send lost connection to sogd server ***";
+//             write(1, errmsg, strlen(errmsg));
+//             fwrite(errmsg,1,strlen(errmsg),fscript);
+//             /* we lost connection, check the policy and log info */
+//             if ( require_remote_slogd==1 ) {
+//                 /* write termninatin info to screen */
+//                  
+//                 /* exit loop */
+//                 break;
+//                 /* TODO: send abunch of debugging info */
+//             }
+//         }
+        
+        
+        /* TODO: only send to slogd server if slogdserver is configured in conf fileno
+           Take into account what happens if network failure
+        */
+//        if (slogdIsConnected==1) {
+//            int sent;
+//            sent=tlstools_send(&tlsclient,&obuf,cc); 
+//            if (sent< 0 ) { /* unable to send message */
+//                if (debug>0) 
+//                  printf("Error: %s\n",tlsclient.msg);
+//                /* Terminste the tlstools session  */
+//                tlstools_end_session(&tlsclient);
+//                slogdIsConnected=0; /* lost conection to slogd server */
+//                /* TODO: what happend if we loose connection to slogd server, terminate or keep local log */
+//            }
+//        }
+a1131 2
+
+
+a1181 1
+            // TODO: new code  dont need this: tlstools_end_session(&tlsclient);
+d1196 1
+a1196 1
+            else printf(_("Sslogger done\r\n"));
+d1199 1
+a1199 4
+        /* TODO: test close of slogd client, or do we do this in finsh()?*/
+        //gnutls_bye (tlsclient.session, GNUTLS_SHUT_RDWR);
+        //tlstools_end_session(&tlsclient);
+        
+@
+
+
+1.23
+log
+@working version before atttempting to remove warnings and code cleanup
+@
+text
+@d643 1
+a643 1
+    session=tlstools_init();
+@
+
+
+1.22
+log
+@while trying to get session to work
+@
+text
+@d646 1
+a646 1
+      return; /* err out */
+@
+
+
+1.21
+log
+@*** empty log message ***
+@
+text
+@d75 1
+d80 1
+a80 1
+#include "tlstools.h"
+d102 1
+a102 1
+int slogdConnect(char *);
+d132 10
+a141 1
+struct tlstools_client tlsclient; /* struct for slogd remote logging */
+d277 9
+d374 1
+a374 1
+        tlsclient.server=slogd_server;
+d378 1
+a378 1
+    tlsclient.tlstool_authtype=TLSTOOLS_AUTH_ANON; /* set default to anon */
+d381 1
+a381 1
+            tlsclient.tlstool_authtype=TLSTOOLS_AUTH_X509CERT;
+d383 1
+a383 1
+            tlsclient.tlstool_authtype=TLSTOOLS_AUTH_ANON;
+d387 1
+a387 1
+    tlsclient.port=5556; /* default port */
+d389 1
+a389 1
+        tlsclient.port=atoi(value);
+d414 2
+a415 2
+    if (debug) printf("slogd_server_port=%d\n",tlsclient.port );
+    if (debug) printf("tlstool_authtype=%d\n",tlsclient.tlstool_authtype);
+d599 1
+a599 1
+        sent=tlstools_send(&tlsclient,slogMsg,size); 
+a600 2
+            if (debug>0) 
+                printf("*** Error: %s\n",tlsclient.msg);
+d605 1
+a605 1
+            tlstools_end_session(&tlsclient);
+d612 1
+a612 1
+                printf("\r\n\r\n*** sslogger lost connection to slogd server:%s\r\n", tlsclient.server);
+d634 1
+a634 1
+int 
+d636 3
+a638 1
+    tlsclient.debug=debug; /* set tlstools debugging mode */
+d641 8
+d650 1
+d652 1
+a652 2
+        fprintf(stderr,"Unable to inatalize tls conection to %s:%d\n",tlsclient.server,tlsclient.port);
+        fprintf(stderr,"TLS Error:  %s\n",tlsclient.msg);
+d655 2
+d659 1
+d663 5
+a667 6
+    int sent=tlstools_send(&tlsclient,hi,strlen(hi));
+    if (sent!=strlen (hi)) {
+        printf("Slogd handshake failed:%s\n",tlsclient.msg);
+        //printf("TLS Hello Handshake failed: %s",gnutls_strerror(tlsclient.err));
+        tlstools_end_session(&tlsclient);
+        return 0;
+d669 2
+a670 9
+    
+    /* Read the "OK" back from the server */
+    char buff_ok[4]; /* Read OK back from server */
+    memset (&buff_ok,0,4);
+    if  (tlstools_recv(&tlsclient,buff_ok,4) < 1) { /* Error */
+        printf("Error: %s\n",tlsclient.msg);
+        printf("TLS connect failed: %s",gnutls_strerror(tlsclient.err));
+        tlstools_end_session(&tlsclient);
+        return 0;
+d672 2
+d675 26
+a700 6
+    /* deBUG printf("Read %s\n",buff_ok); */
+    if (strcmp(buff_ok,"OK")!=0) {
+        printf("Error in socket stream. Closing the connection:&s\n",tlsclient.msg);
+        tlstools_end_session(&tlsclient);
+        return 0;
+    }
+d702 6
+d784 3
+a786 3
+    tlstools_cert_file="/etc/pki/slog/servercert.pem"; /* from tlstools.c */
+    tlstools_key_file="/etc/pki/slog/private/serverkey.pem"; /* from tlstools.c */
+    tlstools_ca_file="/etc/pki/slog/CA/cacert.pem";/* from tlstools.c */
+d792 5
+a796 5
+//         //         tlsclient.server="bx4-rhel5";
+//         //tlsclient.server=slogd_server;
+//         //tlsclient.port=5556;
+//         //tlsclient.tlstool_authtype=TLSTOOLS_AUTH_ANON;
+//         //tlsclient.tlstool_authtype=TLSTOOLS_AUTH_X509CERT;
+d840 3
+a842 2
+            gnutls_bye (tlsclient.session, GNUTLS_SHUT_RDWR);
+            tlstools_end_session(&tlsclient);
+d909 2
+a910 2
+            gnutls_bye (tlsclient.session, GNUTLS_SHUT_RDWR);
+            tlstools_end_session(&tlsclient);
+d1280 2
+a1281 2
+            gnutls_bye (tlsclient.session, GNUTLS_SHUT_RDWR);
+            tlstools_end_session(&tlsclient);
+@
+
+
+1.20
+log
+@before changing popen to remove exec
+@
+text
+@d830 2
+a831 1
+            asprintf(&cmd2run,"exec %s 2>&1",cflg);
+d838 2
+a839 1
+            }
+a903 1
+    /* TODO: delete fprintf(fscript,"Reason %s invoked interactive shell for: %s\r\n",ruser,upasswd->pw_name); */
+d910 1
+a912 1
+    /*TODO: slogd hook for output of reason */
+a1053 1
+        //printf ("Waiting\n");
+d1086 1
+a1087 1
+    /*TODO: send above slog header to slogd server */
+@
+
+
+1.19
+log
+@Latest tweeks, disabled signal hancler to test tlstools SIGPIPE overide
+@
+text
+@d785 8
+a792 1
+            
+d855 1
+a855 1
+            /* TODO: close slogd client, or do we do this in the done() or finsh()?*/
+a1067 9
+
+void lostPipe(int sig_num)
+{
+    char *errmsg="*** got sigpipe ***";
+    write(1, errmsg, strlen(errmsg));
+    /* fprintf(stderr, "sighandler(pipe) hit\n");*/
+}
+
+
+a1079 4
+    /* signal handeler for gnutls send - connection broken */
+    /* TODO: delete, an delete lostPipe function
+    (void) signal(SIGPIPE, lostPipe ); 
+    */
+@
+
+
+1.18
+log
+@happy version before code clean up, handed to andrew for testing
+@
+text
+@d823 1
+a823 1
+            asprintf(&cmd2run,"exec %s",cflg);
+d1064 2
+d1083 3
+a1085 1
+    (void) signal(SIGPIPE, lostPipe );
+@
+
+
+1.17
+log
+@version given to andrew
+@
+text
+@d139 2
+a140 1
+
+d263 1
+a263 6
+        /* Connect to slogd Server 
+        TODO: only if slogd_server is defined in config file, and set a flag if notice
+        TODO: figure out where to do this, before/after reason, take into acctount log_all_cmds settings
+        TODO: slogdConnect needs to send the reason, so it must be called latre....
+        TODO: hooks into dooutput and logCmd2...???
+        */
+a274 1
+        /* TODO: policy if network/slogd server is not availabel */
+d276 15
+a290 8
+    else if (require_remote_slogd==1) {
+        if (slogd_server==NULL)
+            fprintf (stderr,"\nError: slogd_server is not set in sslogger.conf\n");
+        printf("\nA policy on this host requires sslogger to log to a remote slogd server.");
+        printf(" If you think you reached this message in error, ask your system administrator to modify the \"require_remote_slogd\" setting in sslogger.conf\n");
+        /* TODO: do we need to suid/sgid to ulink? */
+        unlink(fname);  /* remove the log file as it is empty */
+        exit(EXIT_FAILURE);
+a291 1
+       
+d573 1
+a573 1
+    TODO: Create lostSlogdServer flag
+d575 4
+a579 1
+        int sent;
+d584 3
+d590 2
+d593 1
+a593 1
+            * terminate or keep local log to send later */
+d595 9
+a603 5
+                printf("sslogger lost connection to slogd server:%s\n", tlsclient.msg);
+                printf("\nA policy on this host requires sslogger to be connected to a remote slogd server.");
+                printf(" If you think you reached this message in error, ask your system administrator to modify the \"require_remote_slogd\" setting in  sslogger.conf");
+                /* TODO: do we need to sig  child here? */
+                exit(EXIT_FAILURE);
+d605 2
+d608 2
+d611 1
+a611 1
+         
+d838 1
+a838 1
+                slogdSend(&c,sizeof(char));
+d1062 5
+d1080 3
+d1107 22
+a1128 1
+        slogdSend(&obuf,cc);
+d1146 1
+a1146 4
+        /* TODO: below wrong place? this is only writng to pty pairs? */
+        if (fflg)
+            (void) fflush(fscript);
+    }
+d1212 1
+a1213 1
+            char buf[BUFSIZ];
+d1217 10
+d1230 9
+a1238 5
+            /* TODO: slogCilent close hook goes here */
+        }
+        if (fscript!=NULL) { 
+            (void) fclose(fscript);        
+            /* TODO: karlos */
+d1240 2
+d1246 10
+a1255 1
+            printf(_("Sslogger done, file is %s\r\n"), fname);
+@
+
+
+1.16
+log
+@working before addding read_conf
+@
+text
+@d81 1
+d132 4
+d137 3
+d172 4
+d261 12
+a272 11
+    
+    /* Connect to slogd Server 
+    TODO: only if slogd_server is defined in config file, and set a flag if notice
+    TODO: figure out where to do this, before/after reason, take into acctount log_all_cmds settings
+    TODO: slogdConnect needs to send the reason, so it must be called latre....
+    TODO: hooks into dooutput and logCmd2...???
+    */
+    char *slogMsg;
+    asprintf (&slogMsg,"clientLogFile:%s; %s[%d]; user:%s; as:%s; %s; reason:%s\n",fname,progname,p,user,asUser,cmd,reason);
+    
+    slogdIsConnected=slogdConnect(slogMsg); /* set the slogd connected flag */
+d276 3
+d281 10
+d349 40
+d393 5
+d579 1
+a579 1
+                printf("Error: %s\n",tlsclient.msg);
+d585 7
+d593 4
+a596 1
+    } 
+d602 3
+d618 1
+a618 1
+        printf("Slogd handshake e failed:%s\n",tlsclient.msg);
+a715 1
+    /* TODO: tmp slogd hooks, theses need to come from congig file
+d717 4
+a720 10
+    */
+    tlsclient.server="bx4-rhel5";
+    tlsclient.port=5556;
+    tlsclient.tlstool_authtype=TLSTOOLS_AUTH_ANON;
+    //tlsclient.tlstool_authtype=TLSTOOLS_AUTH_X509CERT;
+    tlsclient.debug=4;
+    //tlstools_set_crl_file("/etc/funk");
+    //tlstools_ca_file="/etc/slogd/fuvker";
+    tlstools_cert_file="/etc/pki/slog/servercert.pem";
+    tlstools_key_file="/etc/pki/slog/private/serverkey.pem";
+d722 14
+d742 1
+a742 1
+        printf(_("Sslogger started, file is %s\n"), fname);
+@
+
+
+1.15
+log
+@whislt intigrating slogdConnect(char *msg) and logCmd2
+@
+text
+@d100 2
+d131 1
+a131 1
+slogdIsConnected=0; /* set to 1 when a conection is establihed */
+d249 17
+d496 21
+d518 1
+a518 1
+/* TODO: testing slogd connect */
+d520 1
+a520 1
+slogdConnect (void) {
+a521 1
+    int retVal=-1; 
+d525 1
+a525 1
+        return -1;
+d530 2
+a531 1
+    static char *hi = "slogClient:you post\n barf\n barf choke\n"; /*TODO:  get this from config.h? */
+a533 1
+        retVal=1;
+d537 1
+a537 1
+        return -1;
+d547 1
+a547 1
+        return -1;
+d554 1
+a554 1
+        return 1-;
+d556 1
+a556 1
+    return 0; /* all is happy */
+d647 1
+a647 12
+    createSlog();
+    
+    /* Connect to slogd Server 
+       TODO: only if slogd_server is defined in config file, and set a flag if notice
+       TODO: figure out where to do this, before/after reason, take into acctount log_all_cmds settings
+       TODO: slogdConnect needs to send the reason, so it must be called latre....
+       TODO: hooks into dooutput and logCmd2...???
+    */
+    if (slogdConnect() > 0) {
+        slogdIsConnected=1; /* set the connected flag */
+    }
+        
+d730 1
+d739 1
+d741 2
+d777 13
+a789 1
+    fprintf(fscript,"Reason %s invoked interactive shell for: %s\r\n",ruser,upasswd->pw_name);
+d791 2
+d794 1
+d970 3
+a972 1
+
+d991 1
+a991 1
+        
+d996 12
+a1007 12
+        if (slogdIsConnected==1) {
+            int sent;
+            sent=tlstools_send(&tlsclient,&obuf,cc); 
+            if (sent< 0 ) { /* unable to send message */
+                if (debug>0) 
+                  printf("Error: %s\n",tlsclient.msg);
+                /* Terminste the tlstools session  */
+                tlstools_end_session(&tlsclient);
+                slogdIsConnected=0; /* lost conection to slogd server */
+                /* TODO: what happend if we loose connection to slogd server, terminate or keep local log */
+            }
+        }
+a1045 7
+    /* Send  Syslog Interactive shell */
+    char *myCmd;
+    asprintf(&myCmd,"invoked_shell:\"%s\"",shell);
+    if (!logCmd2(ruser,upasswd->pw_name,myCmd,sfname,comment)) {
+        /*somting wong, cant open log for writing */
+        exit(EXIT_FAILURE);
+    }
+d1047 2
+a1048 1
+    /* TODO: slogd hool for header output */
+d1083 3
+@
+
+
+1.14
+log
+@static first pass at remote slogging
+@
+text
+@d128 2
+a135 2
+struct tlstools_client tlsclient; //For slogd logging
+
+d482 1
+a482 1
+    int retVal=1; 
+d486 1
+a486 1
+        return 1;
+d498 1
+a498 1
+        return 1;
+d508 1
+a508 1
+        return 1;
+d515 1
+a515 1
+        return 1;
+d517 1
+a517 1
+
+d616 4
+a619 1
+    slogdConnect();
+d943 1
+a943 2
+        /* TODO: slogd hook */
+        int sent;
+d947 11
+a957 8
+        sent=tlstools_send(&tlsclient,&obuf,cc); 
+        // TODO: delete sent=tlstools_send(&tlsclient,&msg2,strlen(msg2));
+        if (sent< 0 ) {
+            printf("Error: %s\n",tlsclient.msg);
+            /* Terminste the tlstools session and end */
+            tlstools_end_session(&tlsclient);
+            //return 1;
+            /* TODO: what happend if we loose connection to slogd server */
+@
+
+
+1.13
+log
+@before adding remote log server
+@
+text
+@d75 7
+a81 1
+//Prototypes
+d129 1
+a129 1
+//defaults if sslogger.conf is foobar
+d134 2
+d139 1
+a139 1
+    //reads config_file looking fir key, 
+d478 42
+d593 15
+a607 1
+    /* Create log file cut from here */    
+d610 8
+d698 1
+d707 1
+d746 1
+d921 2
+d934 3
+d939 17
+d1000 2
+d1035 1
+d1046 2
+@
+
+
+1.12
+log
+@aftger include cleanup
+@
+text
+@d534 1
+a534 1
+                _("usage: %s [-f] [-q] [-h] [-d]\n"),progname);
+@
+
+
+1.11
+log
+@working mkdir version before code cleanup
+@
+text
+@d62 1
+a136 1
+    int retVal=0;
+d310 1
+a310 1
+    int r=gethostname(hname,sizeof(hname));
+@
+
+
+1.10
+log
+@post spelling changes
+@
+text
+@d380 4
+d389 1
+a389 1
+    e=errno; //get the error
+d392 1
+a392 1
+            if (mkdir(yeardir,CREATE_DIR_PERM) != 0) {
+d421 1
+a421 1
+            if (mkdir(monthdir,CREATE_DIR_PERM) != 0) {
+d437 2
+a438 1
+    
+d462 1
+a462 1
+        fprintf(stderr,"Warning: unable to change permissions on %s\n  Session may not be secure\n",fname);
+@
+
+
+1.9
+log
+@working version before changing spelling
+@
+text
+@d43 3
+a45 3
+*  - Modified to allow logging of keystokes to a file
+*  - This file is based off a  modfied version of the script.c 
+*    source code mentiond in the above Copywrite
+d122 1
+a122 1
+//defaults if sslogger.conf is foobarr
+d125 1
+a125 1
+int minCommentSize=0; //Min coment len //TODO: change name to min_comment to match config name
+d246 2
+a247 2
+            printf("wacking comment len to:%d\n",commentSize);
+            printf("reasonLen:%d syslogCommentSize:%d minCommentSize:%d\n",strlen(reason),commentSize,minCommentSize);
+d266 1
+a266 1
+    /* Get options from congig file */
+d317 1
+a317 1
+                printf("Unabel to determine user login id\n");
+d356 1
+a356 1
+        if (debug) printf("Loging cmd output: off\n");
+d360 1
+a360 1
+    if (debug) printf("Loging cmd output: on\n");
+d366 1
+a366 1
+    //Get formants for Year, month, day, time
+d384 1
+a384 1
+        // cant write to yeardir, or doesnt exist 
+d386 2
+a387 2
+        //printf("Darn: got errror e:%d ENOENT:%d\n",e,ENOENT);
+        if (e == ENOENT ) { //path doesnt exist, lets create
+d414 1
+a414 1
+        //cant write to monthpath, or doesnt exist...
+d416 1
+a416 1
+        if (e==ENOENT ) { //path doesnt exist, lets create
+d435 1
+a435 1
+    //FileName formating 
+d545 1
+a545 1
+    /* Senerio 1: execute a command and quit */
+d564 1
+a564 1
+            //comment below is "(null)" as we dont prompt prompt for a Reason
+d590 1
+a590 1
+            //comment below is "(null)" as we dont prompt prompt for a Reason
+d633 1
+a633 1
+    /* Senerio 2: run a interactive session */
+d656 1
+a656 1
+        if (commentLen>0)  //wack off return char
+d659 2
+a660 2
+        /*  comment will be trucated */
+        //TODO: DELET ME if (strlen(comment) > commentSize) comment[commentSize]=(char)0;
+@
+
+
+1.8
+log
+@before moving create year&month dir to own dir
+and moving fopen(fscript)
+and adding a check to see if we should open the file or not!.
+@
+text
+@d52 1
+d92 1
+d238 1
+a238 2
+
+    //TODO: test wacking comments to syslog to MAXCOMMENTSIZE 
+d305 3
+a307 73
+/*
+* script -t prints time delays as floating point numbers
+* The example program (scriptreplay) that we provide to handle this
+* timing output is a perl script, and does not handle numbers in
+* locale format (not even when "use locale;" is added).
+* So, since these numbers are not for human consumption, it seems
+* easiest to set LC_NUMERIC here.
+*/
+
+int
+main(int argc, char **argv) {
+    /* unset suid bits */
+    ruid = getuid ();
+    gruid = getgid (); 
+    euid = geteuid ();
+    geuid = getegid ();
+    undo_setuid ();
+    undo_setgid();
+
+    extern int optind;
+    char *p;
+    int ch;
+ 
+    progname = argv[0];
+    if ((p = strrchr(progname, '/')) != NULL)
+        progname = p+1;
+
+
+    setlocale(LC_ALL, "");
+    setlocale(LC_NUMERIC, "C");	/* see comment above */
+    bindtextdomain(PACKAGE, LOCALEDIR);
+    textdomain(PACKAGE);
+
+    if (argc == 2) {
+        if (!strcmp(argv[1], "-V") || !strcmp(argv[1], "--version")) {
+            printf(_("%s (%s)\n"),
+                progname, VERSION);
+            return 0;
+        }
+    }
+
+    while ((ch = getopt(argc, argv, "c:fqthd")) != -1)
+        switch((char)ch) {
+        case 'c':
+            cflg = optarg;
+            break;
+        case 'f':
+            fflg++;
+            break;
+        case 'q':
+            qflg++;
+            break;
+        case 't':
+            tflg++;
+            break;
+        case 'h': 
+            hflg=0; //default is true, cd to $HOME
+            break; 
+        case 'd' :
+            debug=1;
+            break;
+        case '?':
+        default:
+            fprintf(stderr,
+                _("usage: %s [-f] [-q] [-h] [-d]\n"),progname);
+            exit(1);
+        }
+    argc -= optind;
+    argv += optind;
+    readConf();
+    //Turn on flushing by default
+    //fflg++;
+   
+d315 1
+a315 1
+        ruser=getenv("LOGNAME");
+d348 13
+a360 1
+
+d447 1
+a447 1
+    fscript = fopen(fname, "w"); //TODO: make this a read/write, and rewind the file when done(karlos)
+d456 3
+a458 3
+    if (! fchmod(fileno(fscript),0440))
+        fprintf(stderr,"Warning: unable to change permissions on %s\n  Session may not be secure",fname);
+    /* TODO: move file create mode to config.h or ssloger.conf */
+d461 79
+d584 1
+a584 1
+            printf("running popen exec: %s\n",cflg);
+d588 2
+d595 8
+a602 1
+	      
+d606 2
+d619 1
+a619 6
+                do_setuid();
+                do_setgid();
+                /* undo setuid only if we want users to be able to read their own files */
+                if (allow_user_replay==1) 
+                    undo_setuid();
+                if (c='\n') fputc('\r',fscript); //tty kludge
+a620 2
+                undo_setuid();
+                undo_setgid();
+d622 1
+d624 3
+a626 1
+            exitVal=pclose(pinput);
+d628 1
+d778 1
+a778 1
+    if (fscript!=null) 
+d876 1
+a876 1
+    if (fscript!=null) 
+d932 1
+a932 1
+        if (fscript!=null) { 
+@
+
+
+1.7
+log
+@after changing -h to be set while using the -c option
+@
+text
+@d84 1
+d86 2
+a87 1
+void do_setuid(void);
+d120 1
+a120 1
+//below from slogger.conf
+d122 3
+a124 2
+int commentSize=100; //Max comment len
+int minCommentSize=0; //Min coment len
+d195 1
+d198 1
+d206 1
+d226 1
+d256 1
+d289 6
+d298 2
+d321 1
+a321 1
+    
+d388 1
+a388 1
+		     }
+d437 2
+a438 1
+    do_setuid ();
+d442 1
+a442 1
+	e=errno; //get the error
+d445 1
+a445 1
+            if (mkdir(yeardir,0750) != 0) {
+d449 1
+d464 1
+d474 1
+a474 1
+            if (mkdir(monthdir,0750) != 0) {
+d478 1
+d486 1
+d494 2
+a495 2
+    asprintf(&fname,"%s/sl-%s-%s-%s-%s",monthdir,hname,ruser,upasswd->pw_name,ldate);
+    asprintf(&sfname,"sl-%s-%s-%s-%s",hname,ruser,upasswd->pw_name,ldate);
+d498 7
+a504 1
+    fscript = fopen(fname, "w"); //TODO: make this a read/write, and rewind the file when done(karllos)
+d507 1
+d512 4
+d517 2
+a518 1
+
+d586 5
+d593 2
+d596 2
+a597 1
+            pclose(pinput);
+d599 1
+a599 1
+            exit(EXIT_SUCCESS);
+d686 7
+d722 7
+d748 2
+a749 2
+
+    (void) fclose(fscript);
+d846 2
+a847 1
+    (void) fclose(fscript);
+d902 4
+a905 1
+        (void) fclose(fscript);
+@
+
+
+1.6
+log
+@before messing with -h on cmd line
+@
+text
+@d489 2
+a490 1
+
+d514 7
+d562 1
+d599 3
+a601 3
+	if ( (chdir (upasswd->pw_dir)) != 0) {
+	    fprintf (stderr,"Warning: cannot change directory to %s\n", upasswd->pw_dir);
+	}
+@
+
+
+1.5
+log
+@happy working version
+@
+text
+@d170 1
+a170 1
+            "Slogger not started.\n"),
+d226 2
+a227 1
+    fprintf(log," user:%s; as:%s; %s; logfile:%s; reason:%s\n",user,asUser,cmd,keyLogfname,reason);
+d488 1
+a488 1
+        printf(_("Sloggerd started, file is %s\n"), fname);
+d745 1
+a745 1
+    fprintf(fscript, _("Slogger started on %s"), obuf);
+d835 1
+a835 1
+            fprintf(fscript, _("\nSlogger done on %s"), buf);
+d842 1
+a842 1
+            printf(_("Slogger done, file is %s\r\n"), fname);
+@
+
+
+1.4
+log
+@after fixing looging to special dirs, and syslog message len
+@
+text
+@d226 1
+a226 1
+    fprintf(log," user:%s; as:%s %s; logfile:%s; reason:%s\n",user,asUser,cmd,keyLogfname,reason);
+d230 10
+a239 1
+    if (strlen(reason) > commentSize && commentSize>0)
+d241 1
+d243 1
+a243 1
+    asprintf(&message,"user:%s; as:%s %s; logfile:%s; reason:%s\n",user,asUser,cmd,keyLogfname,reason);
+d506 1
+a506 1
+            asprintf(&myCmd,"invoked_cmd:%s",cflg);
+a512 1
+
+d523 1
+a523 1
+            asprintf(&myCmd,"invoked_cmd:%s",cflg);
+d796 1
+a796 1
+    asprintf(&myCmd,"invoked_shell:%s",shell);
+@
+
+
+1.3
+log
+@semi working create dir for logs
+still has mkdir  bug
+@
+text
+@a1 6
+* This file is based off a  modfied version of the script.c 
+* source code mentiond in the below Copywrite
+*/
+
+
+/*
+d41 6
+d67 1
+a67 1
+#endif
+d86 1
+a86 1
+int read_conf(const char *key, char **value);
+d88 1
+a88 1
+int logCmd (char *message);
+d100 1
+a101 1
+
+d185 2
+a186 1
+int logCmd (char *message) {
+d191 1
+a191 1
+
+d195 10
+a204 2
+        fprintf ( stderr,"Can't open logfile: %s\n",logfname);
+        return(0); /* Can't open file */
+d207 1
+a207 1
+    /*time format */
+a210 1
+
+d214 2
+a215 2
+	perror("localtime");
+	exit(EXIT_FAILURE);
+d218 4
+a221 3
+	fprintf(stderr, "strftime returned 0");
+	exit(EXIT_FAILURE);
+    }
+a222 1
+
+d225 2
+a226 1
+    fprintf(log,"%s %s[%d]; %s ",outstr,progname,p,message);
+d229 5
+a234 2
+
+    //TODO: wack comments to syslog toMAXCOMMENTSIZE 
+d237 1
+a237 1
+    
+d241 1
+d266 1
+a266 1
+        //printf ("found, result is: %s\n",value);
+d355 2
+a356 2
+    ruser=getlogin(); //dont reaally like this
+    if (ruser == NULL ) {
+d409 1
+a409 1
+    //Verify we can write to yearpath
+d412 11
+a422 7
+    if (access(yeardir,W_OK)!=0);
+      e=errno;      
+    if (e = ENOENT ) { //path doesnt exist, lets create
+        if (mkdir(yeardir,0750) != 0) {
+            fprintf(stderr,"Error: unable to create directory: %s\n",yeardir);
+            undo_setuid();
+            exit(EXIT_FAILURE);
+d424 9
+a432 6
+    }
+    else {
+        fprintf(stderr,"Error: unable to write to directory: %s\n",yeardir);
+        undo_setuid();
+        exit(EXIT_FAILURE);
+    }
+d434 5
+a438 1
+    //verify we can write to monthpath
+d440 14
+a453 5
+    if (access(monthdir,W_OK)!=0);
+      e=errno;
+    if (e =ENOENT ) { //path doesnt exist, lets create
+        if (mkdir(monthdir,0750) != 0) {
+            fprintf(stderr,"Error: unable to create directory: %s\n",monthdir);
+d457 2
+a458 6
+    }
+    else {
+        fprintf(stderr,"Error: unable to write to directory: %s\n",monthdir);
+        undo_setuid();
+        exit(EXIT_FAILURE);
+    }
+d470 1
+a474 2
+    //openlog("slogger", LOG_ODELAY, LOG_AUTHPRIV);
+
+a481 1
+            //TODO: dont create /var/log/sl/...
+d492 1
+a492 2
+            fclose(stdin);
+            char *message;
+d494 10
+a503 4
+            asprintf(&message,"user:%s; as:%s invoked_cmd:%s; logfile:%s; reason:%s",
+                     ruser,upasswd->pw_name,cflg,sfname,comment);
+            //log to syslog
+            logCmd(message);
+d513 8
+a520 5
+            char *message;
+            asprintf(&message,"user:%s; as:%s invoked_command:%s; as:%s; logfile:%s; reason:",
+                     ruser,upasswd->pw_name,cflg,sfname);
+            //log to syslog
+            logCmd(message);	      
+d554 1
+a554 1
+        int commentLen=0;
+d559 1
+a559 1
+            if (debug) printf ("DEBUG: comment len=%d\n",strlen(comment));
+d564 7
+a570 2
+    
+        if (strlen(comment) > commentSize) comment[commentSize]=(char)0;
+d783 9
+a792 8
+    
+    /* Send  Syslog Interactive shell */           
+    char *message;
+    usleep(10000);
+    asprintf(&message,"user:%s; as:%s invoked_intractive_shell:%s; logfile:%s; reason:%s",
+                ruser,upasswd->pw_name,shell,sfname,comment); 
+    //log to syslog
+    logCmd(message);
+@
+
+
+1.2
+log
+@before adding date dir: /var/log/sl/2009/02/(logfile)
+@
+text
+@d60 1
+d221 2
+d348 1
+a348 1
+             }
+d376 12
+a387 1
+    my_strftime(ldate, sizeof ldate, "%Y.%m.%d-%H:%M:%S.log", localtime(&tvec));
+d389 1
+d391 43
+a433 1
+    asprintf(&fname,"%s/sl-%s-%s-%s-%s",log_dir,hname,ruser,upasswd->pw_name,ldate);
+a436 1
+    do_setuid ();
+a529 1
+        //TODO: wack comment by MAXCOMMENTSIZE 
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d87 1
+a87 1
+
+d184 41
+d414 2
+a415 1
+            syslog(LOG_INFO,message);
+d428 2
+a429 2
+            syslog(LOG_INFO,message);
+
+d695 2
+a696 1
+    syslog(LOG_INFO,message);
+@

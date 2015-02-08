@@ -1,0 +1,68 @@
+head	1.1;
+access;
+symbols;
+locks
+	ebrand:1.1; strict;
+comment	@# @;
+
+
+1.1
+date	2010.01.04.23.10.07;	author ebrand;	state Exp;
+branches;
+next	;
+
+
+desc
+@originial config file
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@# Config file for sslogger
+#
+#
+#Log output of all commands, even non interactive (1 is true). Default 0
+log_all_cmds=0
+
+#
+#Minimum Comment length in chars, if zero, no prompt
+min_comment=4
+#
+
+# Maximum Comment length for messages sent to syslog
+# Full comment is always logged to /var/log/slog/slog.log
+max_comment=40
+
+# To allow normal users replay access to log files they create, Set below to 1
+allow_user_replay=1
+
+# slogd server name or ip.
+# If commented out or empty remote log collection is disabled
+slogd_server=
+
+#slogd service port
+slogd_server_port=5556
+
+#slogd auth type. Must match slogd server tls_authtype
+# Current options are "x509" or "anon".
+# Setting to x509 requires x509 tls certs
+# to be generated and pushed to all clients.
+# TODO: more info on creating certs
+slogd_authtype=anon
+
+# When using a slogd server, and a sslogger session is over, and logs properly
+# transfered to slogd server, delete the local log file on exit.
+# Setting to 1 will enable keeping of all local log file.
+keep_local_logs=0
+
+# Policy for when a conection to a slogd server is unavailable or unexpectedly terminiated
+# If set to 1, ssloger will terminate if connection is broken to slogd server
+#       and will die if it cannot connect to the remote slogd server at startup
+# If set to 0, local logging will be used when we can not contact remote server
+#       or when a network conection to the slogd server is broken
+require_remote_slogd=0
+@

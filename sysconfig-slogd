@@ -1,0 +1,15 @@
+# slogd-.91 config file
+
+#Opt args:
+#  -d 		run as daemon
+#  -v <1-9>	debug level
+#  -p <file>	pid file 
+#  -c <file>	config file
+
+
+S_USER=slogger
+S_GROUP=sloggers
+SLOG_PIDFILE=/var/run/sslogger/sslogger-slogd.pid
+SLOGD_ARGS="-d -c /etc/sslogger.d/sslogger-slogd.conf -p $SLOG_PIDFILE"
+
+

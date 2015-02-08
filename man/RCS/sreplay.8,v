@@ -1,0 +1,102 @@
+head	1.2;
+access;
+symbols;
+locks
+	ebrand:1.2; strict;
+comment	@# @;
+
+
+1.2
+date	2010.06.24.04.01.29;	author ebrand;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2010.01.16.14.42.44;	author ebrand;	state Exp;
+branches;
+next	;
+
+
+desc
+@bedore ading slogd
+@
+
+
+1.2
+log
+@updated sslogger.conf path
+@
+text
+@.\" Process this file with
+.\" groff -man -Tascii foo.1
+.\"
+.TH sreplay 8 "February 2009" Linux "User Manuals"
+.SH NAME
+sreplay \- replay a log file created with slog or sslogger
+.SH SYNOPSIS
+
+sreplay <filename>
+.SH DESCRIPTION
+sreplay allows users to replay sessions created with the sslogger utility.
+
+.SH OPTIONS
+.B sreplay <filename>
+Replays interactive session identified by filename
+.br
+.TP
+.B sreplay help:
+Press the following keys during the sreplay session:
+    f or /    Find a string (not implemented yet)
+    n or /    Find the next match (not yet implemented)
+    r or ?    Find backwards (not implemented yet)
+    b         Back up 1 line
+    <enter>   Display next line
+    <anykey>  Display next char
+    q         quit
+    + or p    Starts auto-replay
+
+During playback:
+    +         Increase playback speed
+    -         Decrease playback speed
+    <anykey>  End auto-replay
+.SH RETURN VALUES
+Non-zero on error
+
+.SH FILES
+.I /var/log/slog/*
+.RS
+Default directory in which sessions are logged
+.SH CONFIGURATION FILES
+.TP
+/etc/group:
+#To allow user2 to replay all session files, add user2 to the sloggers group
+.br
+sloggers:x:480:user2
+.TP
+/etc/sslogger.d/sslogger.conf:
+Configuration file for sslogger
+.SH EXAMPLES
+
+$ sreplay <filename>
+.br
+- Replays an interactive session log (may require user to be added to sloggers group, see (CONFIGURATION FILES)
+.SH BUGS
+If you feel you have found a bug in slogger utility, please submit a bug report at http://sslogger.sourceforge.net
+.SH SUPPORT
+Limited free support is available via the slogger-users mailing list, see http://sslogger.sourceforge.net to subscribe or search the archives.
+.SH AUTHOR
+Edward Brand  <edbrand@@brandint.com>
+.SH SEE ALSO
+slog(8) sreplay(8) sslogger(8) sudo(8), suders(8), su(2)
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d47 1
+a47 1
+/etc/sslogger.conf:
+@

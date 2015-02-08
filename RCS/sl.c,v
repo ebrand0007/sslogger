@@ -1,0 +1,366 @@
+head	1.3;
+access;
+symbols;
+locks
+	root:1.3; strict;
+comment	@ * @;
+
+
+1.3
+date	2009.03.05.22.43.15;	author root;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2009.01.15.20.27.46;	author root;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2009.01.10.14.54.05;	author root;	state Exp;
+branches;
+next	;
+
+
+desc
+@init
+@
+
+
+1.3
+log
+@happy working version
+@
+text
+@#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <printf.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include "config.h"
+
+/*
+    This file is part of sslogger
+
+    sslogger is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    sslogger is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with sslogger.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+//protypes
+char * shiftArgv(int argc, char **argv);
+void usage(void);
+//max cmd line length
+#define MAXCMDLEN 1024
+
+//global vars
+char *progname="sl";
+int debug=0;
+
+void usage(void) {
+    fprintf(stderr, "Usage: %s [-u <user>] -h -f cmd and args\n",progname);
+    exit(EXIT_FAILURE);
+}
+
+
+int main(int argc, char* argv[]) {
+    int x=0;
+    const int maxSudoOpts=6;
+    char *sudoOpts[maxSudoOpts];
+    sudoOpts[0]=STRINGIFY(SUDO); //from config.h
+    sudoOpts[1]="-u";
+    sudoOpts[2]="root"; //default sudo user
+    sudoOpts[3]="-H"; //set the user $HOME
+    sudoOpts[4]=(char*)0; // terminiate list
+    char **p_sudoOpts; //alternate pointer to sudoOpts
+    p_sudoOpts=&sudoOpts[3]; //point to end of array  
+
+    char *sloggerOpts[argc+4]; //need 2 quotes and null terminiator
+    sloggerOpts[0]=STRINGIFY(SLOGGER); //from config.h"slogger";
+    sloggerOpts[1]=NULL; //terminate list
+    char **p_sloggerOpts; //alternate pointer to sloggerOpts
+    p_sloggerOpts=&sloggerOpts[1]; //point to end of array
+    char slCmd[MAXCMDLEN];  //quoted command to send to ssloger -c 
+
+    if (argc>1 && (!strcmp(argv[1], "-V") || !strcmp(argv[1], "--version"))) {
+        printf("%s (%s)\n",progname, VERSION);
+        exit(EXIT_SUCCESS);
+        }
+
+    x=1;
+    if (argc>1) {
+        argv++; //parse args, skipping progname
+     }
+    while (argv!=NULL && x<argc) { //parse args
+      /* couldnt use getopts, as we need to pass unknown args to slogger as -c $args */
+      //if (x>=argc) break;
+      if (strcmp(*argv,"-d")==0) { //enable debugging 
+          debug=1;
+          *p_sloggerOpts="-d";
+          p_sloggerOpts++;
+          *p_sloggerOpts=NULL; //terminiate the list
+       }
+      else
+      if (strcmp(*argv,"-h")==0) {
+          // dont cd $HOME for new user
+          *p_sloggerOpts="-h";
+          p_sloggerOpts++;
+          *p_sloggerOpts=NULL; //terminiate the list
+      }
+      
+      else if (strcmp(*argv,"-f")==0) {
+          *p_sloggerOpts="-f";
+          p_sloggerOpts++;
+          *p_sloggerOpts=NULL; //terminiate the list
+      }
+       
+      else if (strcmp(*argv,"-u")==0) {
+           /* set the sudo user */ 
+           if (*(argv+1)==NULL) usage();
+           sudoOpts[2]=*(argv+1);
+           argv++;
+           x++;
+      }
+      else {
+          *p_sloggerOpts="-c";
+          p_sloggerOpts++;
+          /* TODO: loop trough remaining args, adding all to p_sloggerOpts */
+          slCmd[0]='\0'; //empty string
+          while (argv!=NULL && x<argc) {
+              strcat(slCmd,*(argv));
+              argv++;
+              x++;
+              if (x<argc)
+                  strcat(slCmd," ");
+          }
+          *p_sloggerOpts=&slCmd[0];
+          p_sloggerOpts++;
+          *p_sloggerOpts=NULL;
+          break; 
+      }
+      argv++;
+      x++;
+    }
+
+    if (debug) { 
+        //print sudo opts
+        p_sudoOpts=&sudoOpts[0]; //point to begining of array
+	printf("sudo Opts:");
+        while (*p_sudoOpts!=NULL) {
+            printf("%s ",*p_sudoOpts);
+            *p_sudoOpts++;
+        }
+        printf("\n");
+        //print slogger opts
+        printf("sloggerOpts:");
+        p_sloggerOpts=&sloggerOpts[0];
+        while (*p_sloggerOpts!=NULL) {
+            printf("%s ",*p_sloggerOpts);
+            *p_sloggerOpts++;
+        }
+        printf("\n");
+        printf("slCmd:%s\n",slCmd);
+    }
+
+    /* join p_sudoOpts and p_sloggerOpts */
+    int sudoOptsCount=0;
+    int sloggerOptsCount=0;
+
+    p_sudoOpts=&sudoOpts[0]; //point to begining of array
+    while (*p_sudoOpts!=NULL) {
+	sudoOptsCount++;
+        *p_sudoOpts++;           
+    }
+    p_sloggerOpts=&sloggerOpts[0]; //point to begining of array
+    while (*p_sloggerOpts!=NULL) {
+	sloggerOptsCount++;
+        *p_sloggerOpts++;
+    }
+    int optTot=sudoOptsCount+sloggerOptsCount+1;
+    if (debug) printf ("OptTot=%d\n",optTot);
+    char *cmd[optTot];
+    char **p_cmd; //ptr to cmd list
+    p_cmd=&cmd[0];
+    p_sudoOpts=&sudoOpts[0]; //point to begining of array
+    while (*p_sudoOpts!=NULL) {
+        *p_cmd=*(p_sudoOpts);
+        *p_cmd++;
+	*p_sudoOpts++;
+    }
+    p_sloggerOpts=&sloggerOpts[0]; //point to begining of array
+    while (*p_sloggerOpts!=NULL) {
+        *p_cmd=*(p_sloggerOpts);
+        //printf ("string:%s\n",*p_cmd);
+        *p_cmd++;
+	*p_sloggerOpts++;
+    }   
+    *p_cmd=NULL; //terminate the array
+    
+
+    if (debug) {
+	// print the cmd array now
+	p_cmd=&cmd[0];
+	while (*p_cmd!=NULL) {
+	    printf("%s ",*p_cmd);
+	    *p_cmd++;
+	}
+	printf ("\n");
+    }
+    if ( execvp(cmd[0],cmd)<0) {
+	//TODO: error trapping of return vals
+	printf("Exec went bad\n");
+	exit(EXIT_FAILURE);
+    }
+
+
+ 
+}
+@
+
+
+1.2
+log
+@happy release
+@
+text
+@d10 17
+d30 2
+d38 1
+a38 1
+    fprintf(stderr, "Usage: %s -u <user> -h -f -q cmd and args\n",progname);
+d60 1
+a60 1
+
+d104 2
+a105 3
+          //*p_sloggerOpts="\"; // a sungle quote
+	  //p_sloggerOpts++;
+          /* TODO: loop rough remaining args, adding all to p_sloggerOpts */
+d107 1
+a107 2
+              *p_sloggerOpts=*(argv);
+              p_sloggerOpts++;
+d110 2
+d113 2
+a114 2
+          //*p_sloggerOpts="\"";
+          //p_sloggerOpts++;
+d139 1
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d2 1
+d8 1
+d10 2
+a11 8
+#define TTY_BUFSIZE	1024
+char  *prog="sl"; //TODO: this should be in sscript.h
+//char *script="/opt/ss/bin/script"; //TODO: this should be in  config.h
+char *script="slogger"; //TODO: this should be in  config.h
+//char *sudo="/usr/bin/sudo"; //TODO" config.h
+char *sudo="sudo"; //TODO" config.h
+
+//functions
+a12 2
+int isShell=1; //default to spawn a shell
+char *user;
+d14 3
+d19 2
+a20 1
+    fprintf(stderr, "Usage: %s -u <user>  cmd and args\n",prog);
+d25 96
+a120 15
+    printf ("argc len:%d\n",argc);
+    //TODO: sl with no args is same as "sl -u root"
+    int cmdc=argc+3; //lenth of new cmd array
+    char *cmd[cmdc]; //add "sudo -u $user script -c 
+
+    if ( argc < 3 ) { //need -u $user
+        usage();
+        exit(EXIT_FAILURE);
+    }
+
+   //make sure we get -u <user>
+   char *dashU=argv[1];
+   if ( strcmp(dashU,"-u") != 0)  {
+        usage();
+   }
+d122 33
+a154 2
+   //get the user
+   user=argv[2];
+a155 11
+   if (argc > 3) { //we have -u <user> cmd...
+       isShell=0;
+       // init the cmd array
+       cmd[0]=sudo;
+       cmd[1]="-u";
+       cmd[2]=user;
+       cmd[3]=script;//new
+       cmd[4]="-c";//new
+       cmd[cmdc-1]=(char *)0; //terminate the cmd array
+       
+       printf("not a shell:%d\n",argc);
+d157 17
+a173 38
+       /* Place the command and args in cmd and args[] aray */
+       int startAt=3; //start at argv[2]
+       int cmdOffset=5;//new was 0
+       while ((startAt)<argc) { //start at
+           //printf("cmd %d:%s\n",cmdOffset,argv[startAt]);
+           cmd[cmdOffset]=argv[startAt]; //set the cmd array
+           cmdOffset++;
+           startAt++;
+       }
+       //TODO: Qoute the cmd array
+       
+       
+       /*int j=0;
+       int cmdStrLen=0;
+       for ( j=0;j<(cmdc-1);j++) {
+           printf("cmd[%d]: %s\n",j,cmd[j]);
+           cmdStrLen+=strlen(cmd[j])+1; //add space
+       }
+       printf ("strlen:%d\n\n",cmdStrLen);*/  //debugging tools
+       
+       if ( execvp(cmd[0],cmd)<0) {
+           //TODO: error trapping if command went bad
+           printf("Exec went bad\n");
+           exit(EXIT_FAILURE); 
+       }
+   }
+   
+   else { //run the shell
+       //printf("running sudo -u %s %s\n",user,script);
+       //TODO: optionally use -E to preserver environment
+       //Also must have SETENV: in sudoers
+       char *cmd[]={sudo,"-H","-u",user,script,(char *) 0};
+       if ( execvp(cmd[0],cmd)<0) {
+           //TODO: error trapping of return vals
+           printf("Exec went bad\n");
+           exit(EXIT_FAILURE);
+       }
+   }
+a174 5
+
+//TODO: 
+    //log command local and syslog
+    //suid to write to /var/log/ss
+    //need a  config file for weither to log standalone cmsd through script
+@

@@ -1,0 +1,929 @@
+head	1.10;
+access;
+symbols;
+locks
+	ebrand:1.10; strict;
+comment	@ * @;
+
+
+1.10
+date	2009.03.27.17.07.57;	author ebrand;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2009.03.27.12.52.04;	author ebrand;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2009.03.27.02.17.58;	author ebrand;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2009.03.19.21.44.33;	author ebrand;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2009.03.19.21.40.57;	author root;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2009.02.26.22.28.53;	author root;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2009.01.15.20.27.36;	author root;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2008.12.18.23.18.40;	author root;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2008.12.16.23.21.31;	author root;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2008.12.16.23.18.34;	author root;	state Exp;
+branches;
+next	;
+
+
+desc
+@changed usleep to 5 instead of 100
+@
+
+
+1.10
+log
+@next rpm release 25rc1
+@
+text
+@#include <stdio.h>
+#include <unistd.h>
+#include <string.h>
+#include <printf.h>
+#include <signal.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <termios.h>
+#include <sys/ioctl.h>
+
+/*
+    This file is part of sslogger
+
+    sslogger is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    sslogger is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with sslogger.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#define TTY_BUFSIZE     1024
+
+//prototypes
+int replay (const char *, const char *);
+int help (void);
+int myrestore_tty(void);
+//int tty_get_state(struct termios *, int);
+//int tty_set_state(struct termios *, int); 
+
+struct termio tty_saved, tty_current; //man 3 termios
+// static char		*in_buff,	/* line input/output buffers	*/
+// 			*out_buff,
+// 			*in_ptr,
+// 			*out_ptr;
+// static int		in_size,	/* buffer sizes and counters	*/
+// 			out_size,
+// 			in_cnt,
+// 			out_cnt;
+// int opt_v=0; //1 for debuggin
+int fdtty; //fd of tty
+int fdtty_r; //fd read of tty
+int isrestored=0; //set to one when tty is restored
+int delayReplaySpeed=1200; //delay in replay speed, in microsecnds
+int defaultReplaySpeed=6000; //default sleep in replay
+int maxDelaySpeed=200000; //max delay
+int minDelaySpeed=0; //min delay
+//int replyStepSpeed=1000; //step speed at which to change replay speed 
+unsigned long int fileCharPos=0; //replay file char position
+unsigned long int fileLinePos=0; //replay file line number
+FILE *pfile; //FH pointer to file to replay
+//TODO: get/set window size
+//man tty_ioctl 
+
+
+int playSpeed=0;
+/******************************************************************/
+int help (void) {
+    //reset terminial
+    char a=0x1b;
+    char b=0x63;
+    write(fdtty,&a,1);
+    write(fdtty,&b,1);
+    
+    printf ("\r\n\r\nPress the following keys durung the replay session:\r\n");   
+    printf ("    f         Find a string (not implemented yet)\r\n");
+    printf ("    n         Find the next match (not yet implemented)\r\n");
+    printf ("    r         Find backwards (not implemented yet)\r\n");
+    printf ("    b         Back up 1 line\r\n");
+    printf ("    <enter>   Display next line\r\n");
+    printf ("    <anykey>  Display next char\r\n");
+    printf ("    q         quit\r\n");
+    printf ("    + or p    Starts auto-replay\r\n");
+    printf ("\r\n");
+    printf ("During playback:\r\n");
+    printf ("    +         Increase playback speed\r\n");
+    printf ("    -         Decrease playback speed\r\n");
+    printf ("    <anykey>  End auto-replay \r\n");
+    sleep(2);
+    int c,answer;
+    c=-1;
+    while (c<1) {
+        c=fgetc(stdin);
+        answer=tolower(c);
+        usleep(500);
+    }
+
+    return 1;
+}
+/******************************************************************/
+int busy_wait(int u_seconds)
+{
+  struct timeval start, end;
+  gettimeofday(&start, NULL);
+  long int start_usec=start.tv_usec;
+  start_usec+=u_seconds;  //add the sleep time
+  if (start_usec > 999999999) { //roll over the usec
+      start.tv_sec++;
+      start_usec-=999999999;
+      start.tv_usec=start_usec;
+  }
+  while (1) {
+    gettimeofday(&end, NULL);
+    //if(start.tv_usec != end.tv_usec)
+    if (start.tv_sec<end.tv_sec)
+      break;
+    else if(start_usec < end.tv_usec)
+      break;
+    sched_yield(); //yield some cpu time to other processes
+  }
+  //printf("\r\nStart =%06d:%07d, End =%07d:%07d\r\n",start.tv_sec, (int)start.tv_usec, end.tv_sec,(long)end.tv_usec);
+  return 0;
+}
+/******************************************************************/
+void endOFile (void) {
+    printf("\r\n\r\n<End of replay file>\r\n");
+    //printf("charPos:%d lineNum:%d\r\n",fileCharPos,fileLinePos );
+}
+/******************************************************************/
+void my_usleep(unsigned long milliseconds)
+{
+    struct timespec tmReq;
+    tmReq.tv_sec = (time_t)0;
+    tmReq.tv_nsec = milliseconds;
+    // we're not interested in remaining time nor in return value
+    (void)nanosleep(&tmReq, (struct timespec *)NULL);
+}
+
+
+/******************************************************************/
+int gotoLine(unsigned long int seekTo) {
+       int retVal=1;
+       rewind(pfile); //set file pointer to the beginiinig
+       //reset terminial
+       char a=0x1b;
+       char b=0x63;
+       write(fdtty,&a,1);
+       write(fdtty,&b,1);
+       fileCharPos=0;
+       fileLinePos=0;
+       while (fileLinePos<seekTo && retVal>0) {
+           retVal=printNextLine();
+       }
+       //printf("filecharPos:%d fileLinepos:%d\r\n",fileCharPos,fileLinePos);
+       return 1; 
+}
+/******************************************************************/
+int gotoPos (unsigned long int pos) {
+       int retVal=1;
+       rewind(pfile); //set file pointer to the beginiinig
+       //reset terminial
+       char a=0x1b;
+       char b=0x63;
+       write(fdtty,&a,1);
+       write(fdtty,&b,1);
+       fileCharPos=0;
+       fileLinePos=0;
+       while (fileCharPos<pos && retVal>0) {
+           retVal=printNextChar();
+       }
+       //printf("filecharPos:%d pos:%d\r\n",fileCharPos,pos);
+       return 1; 
+}
+/******************************************************************/
+/******************************************************************/
+/******************************************************************/
+int replayAtSpeed (int speed) {
+    // replays file at speed: speed
+    // returns -1 on EOF or quit
+    // returns 1 on char press
+    delayReplaySpeed=speed;
+    int ch;
+    while ((ch =fgetc(pfile))!=EOF) {
+        int cmd=0;
+        /*tty way */
+        char a;
+        a=toascii(ch);
+        write(fdtty,&a,1); //print the char
+        fileCharPos++; //increase the char position
+        if (ch==13) { 
+            fileLinePos++; //increase the line number 
+        }
+       cmd=getc(stdin);
+       if (cmd>0) {
+          if (cmd=='+') delayReplaySpeed=delayReplaySpeed/2; //double the play speed
+          else if (cmd=='-') delayReplaySpeed=delayReplaySpeed*2; //cut the speed in half 
+          else if (cmd=='q' || cmd=='Q' || cmd==3 ) {
+              printf("\r\nQuitting on user command\r\n");
+              return -1;
+              }
+          else return 1; //pause    
+          if (delayReplaySpeed<minDelaySpeed) delayReplaySpeed=minDelaySpeed;
+          if (delayReplaySpeed>maxDelaySpeed) delayReplaySpeed=maxDelaySpeed;
+          //printf("\r\nSeting replay spped to:%d\r\n",delayReplaySpeed);
+          //sleep(1);
+       }
+       cmd=0;
+       if  (delayReplaySpeed > 999 ) my_usleep(delayReplaySpeed*1000); //min nanosleep on RHEL5
+       else if (delayReplaySpeed > 1) busy_wait(delayReplaySpeed); //use busywait instead
+    }
+    endOFile();
+    return 1; //1;
+    
+}
+
+/******************************************************************/
+int printNextLine() {
+    // displays the next full line of text from the replay file
+    // returns -1 on EOF
+    int ch;
+    while ((ch =fgetc(pfile))!=EOF) {
+        /*tty way */
+        char a;
+        a=toascii(ch);
+        write(fdtty,&a,1); //print the char
+        fileCharPos++; //increase the char position
+        if (ch==13) { 
+            fileLinePos++; //increase the line number
+            return 1;
+        }
+    }
+    endOFile();
+    return 1; //-1; //Assume we hit EOF
+}
+/******************************************************************/  
+int printNextChar() {
+    // Displays the next char from the replay file
+    // returns -1 on EOF
+    int ch;
+    if ((ch =fgetc(pfile))==EOF) {
+        endOFile();
+        return 1; //eof hit
+    }
+    fileCharPos++; //increase the char position
+    if (ch==13) fileLinePos++; //increase the line number
+    /*tty way */
+    char a;
+    a=toascii(ch);
+    write(fdtty,&a,1);
+    if (iscntrl(ch)) printNextChar();
+    return 1;
+}
+/******************************************************************/
+int replay(const char *name, const char *tty) {
+  
+    pfile = fopen(name, "r");
+    if (pfile == NULL) {
+        perror(name);
+        return -1;
+    }
+    
+    if ( (fdtty=open(tty,O_WRONLY , 0666))  < 0 ) {
+        printf ("unable to open tty: %s for writing\n",tty);
+        return -1;
+    }
+  
+    if ( (fdtty_r=open(tty,O_RDONLY , 0666))  < 0 ) {
+        printf ("unable to open tty: %s for writing\n",tty);
+        return -1;
+    }
+  
+  /* Fetch the current state of the terminal. */
+    if (tty_get_state(&tty_saved, fdtty) < 0) {
+        fprintf(stderr, "Error: tty_open: cannot get current state!\n");
+        return -1;
+    }
+    usleep(5000);
+    //SET TERMINAL TO DISABLE RAW ECHO:
+    tty_current.c_iflag &= ~(IGNBRK | BRKINT | PARMRK | ISTRIP
+                    | INLCR | IGNCR | ICRNL | IXON);
+    tty_current.c_oflag &= ~OPOST;
+    tty_current.c_lflag &= ~(ECHO | ECHONL | ICANON | ISIG | IEXTEN);
+    tty_current.c_cflag &= ~(CSIZE | PARENB);
+    tty_current.c_cflag |= CS8;
+  
+    if (tty_set_state(&tty_current, fdtty) < 0) {
+        fprintf(stderr, "Error: tty_open: cannot set tty state!\n");
+       return -1;
+    }
+    
+    /* start loop looing for cmd chars to run */
+    int forever=1;
+    tcflush(fdtty, TCIOFLUSH);
+    while (forever>0) { 
+        /* dont do anything till we getc a char */
+        int cmd=getc(stdin);
+        if (cmd > 0) { //we have a char presses
+            if (cmd=='q' || cmd=='Q' || cmd==3 ) {
+                printf ("\r\nQuitting on user command\r\n");
+                usleep(500);
+                tcflush(fdtty, TCIOFLUSH);
+                break; // quit
+            }
+            else if (cmd==13) forever=printNextLine(); //-1 returned on eof
+            else if (cmd=='+' || cmd=='p' || cmd=='P') forever=replayAtSpeed(defaultReplaySpeed); //-1 returned on eof
+            else if (cmd=='b' || cmd=='B' ) gotoLine(fileLinePos-1);
+            else if (cmd=='h') { 
+                help();
+                gotoPos(fileCharPos); //TODO: use gotoPos
+            }
+            //a char was press, print next char
+            else forever=printNextChar(); //-1 returned on eof
+            
+            
+            cmd=-1;
+        }
+        //usleep(500);
+    }
+    sleep(1);
+    //RESET THE TTY
+    myrestore_tty();
+    fclose (pfile);
+    close(fdtty);
+    close(fdtty_r);
+    
+}
+
+/******************************************************************/
+int myrestore_tty(void) {
+  usleep(1000);
+  if (isrestored==1) {
+      //printf ("\rAlready restored\n");
+      return 1;
+  }
+  //printf ("\r\nRestoring Console Settings\n");
+  
+
+  //reset the tty to the privious state
+  sleep (1);
+  tty_set_state(&tty_saved, fdtty);
+
+  //flush tty buffers
+  int bytesInBuffer;
+  int resultI=ioctl(fdtty_r, FIONREAD, &bytesInBuffer );
+  //printf ("\nThere are %d bytes left in the buffer, flushing\n",bytesInBuffer);
+  //tcflush(fdtty, TCIOFLUSH);
+  isrestored=1;
+  
+  char a=0x1b;
+  char b=0x63;
+  write(fdtty,&a,1);
+  write(fdtty,&b,1);
+  usleep(1500);
+  return 1;
+  
+}
+
+/******************************************************************/
+/* Fetch the state of a terminal. */
+int tty_get_state(struct termios *tty, int tty_fd)
+{
+  if (ioctl(tty_fd, TCGETA, tty) < 0) {
+	//fprintf(stderr, "dip: tty_get_state: %s\n", strerror(errno));
+	return(-1);
+  }
+  return(0);
+}
+
+/******************************************************************/
+int tty_set_state(struct termios *tty, int tty_fd)
+{
+  if (ioctl(tty_fd, TCSETA, tty) < 0) {
+	//fprintf(stderr, "dip: tty_set_state: %s\n", strerror(errno));
+	fprintf(stderr, "tty_set_state\n");
+	return(-1);
+  }
+  //tcdain(tty_fd);
+  return(0);
+}
+
+/******************************************************************/
+int main(int argc, char* argv[]) {
+    if  (! isatty(fileno(stdout))) {
+      printf("is not tty\n");
+      return 1;
+    }
+  
+    char *mytty=ttyname(fileno(stdout));
+    printf("Sending output to: %s\n",mytty);
+    char *filename;
+    if ( argc != 2 ) {
+        fprintf(stderr, "Usage: %s <filename>\n",argv[0]);
+        exit(EXIT_FAILURE);
+    }
+    //Get args
+    filename=argv[1];
+    replay(filename,mytty);
+    printf("End replay\n");
+    usleep (5000);
+    exit(EXIT_SUCCESS);
+}
+
+
+/* man tty_ioctl
+   Buffer count and flushing
+       FIONREAD  int *argp
+              Get the number of bytes in the input buffer.
+  //returns 0 on success, -1 on error
+  int ioctl(int fd, int cmd, ...);
+  int *bytesInBuffer;
+  int ioctl(int fd, FIONRED,bytesInBuffer );
+*/
+@
+
+
+1.9
+log
+@messed up replay getpos version....
+
+
+exit
+@
+text
+@d55 2
+a56 2
+long int fileCharPos=0; //replay file char position
+long int fileLinePos=0; //replay file line number
+d123 1
+a123 1
+    printf("charPos:%d lineNum:%d\r\n",fileCharPos,fileLinePos );
+d137 1
+a137 1
+int gotoLine(long int seekTo) {
+d150 1
+d167 1
+a167 1
+       printf("filecharPos:%d pos:%d\r\n",fileCharPos,pos);
+a236 3
+        //fprintf ("EOF\n",stderr);
+        fileCharPos++; //increase the char position
+        if (ch==13) fileLinePos++; //increase the line number
+d240 2
+@
+
+
+1.8
+log
+@after update
+@
+text
+@d31 1
+a31 1
+int replay2 (const char *, const char *);
+d34 2
+a35 2
+int tty_get_state(struct termios *, int);
+int tty_set_state(struct termios *, int); 
+d71 1
+a71 1
+    printf ("\r\n\r\nPreess the following keys durung thge replay session\r\n");   
+d94 1
+a94 1
+    return 0;
+d123 1
+a123 1
+    //printf("charPos:%d lineNum:%d\r\n",fileCharPos,fileLinePos );
+d153 1
+a153 1
+int gotoPos (long int pos) {
+d166 1
+d250 1
+a250 1
+int replay2 (const char *name, const char *tty) {
+d313 1
+a313 1
+        usleep(500);
+d315 1
+a315 1
+    sleep(2);
+a324 169
+void replay (const char *name, const char *tty) {
+  /*int fd;   
+  fd=open (name, O_RDONLY);
+  FILE *fp;   
+  fp=fdopen (fd, "r");
+  if (fp) {
+    printf ("yea, got a fd:%d\n",fd);
+    while (1) {
+      int c;
+      c=getc(fp);
+      putc(c,stdout);
+    }
+    close (fd);
+  }
+  */
+  int key_sleep=500; //default time to sleep waiting for input
+  FILE *fp;
+  fp = fopen(name, "r");
+  if (fp == NULL) {
+      perror(name);
+      //fail();
+      return;
+      //exit(EXIT_FAILURE);
+  }
+  
+  //if ( (fdtty=open(tty, O_WRONLY|O_CREAT|O_TRUNC, 0666))  < 0 ) {
+  //if ( (fdtty=open(tty,O_RDWR , 0666))  < 0 ) {
+  if ( (fdtty=open(tty,O_WRONLY , 0666))  < 0 ) {
+    printf ("unable to open tty: %s for writing\n",tty);
+    return;
+  }
+
+  if ( (fdtty_r=open(tty,O_RDONLY , 0666))  < 0 ) {
+    printf ("unable to open tty: %s for writing\n",tty);
+    return;
+  }
+
+/* Fetch the current state of the terminal. */
+  if (tty_get_state(&tty_saved, fdtty) < 0) {
+	fprintf(stderr, "Error: tty_open: cannot get current state!\n");
+	return;
+  }
+  usleep(5000);
+  //SET TERMINAL TO DISABLE ECHO:
+           tty_current.c_iflag &= ~(IGNBRK | BRKINT | PARMRK | ISTRIP
+                           | INLCR | IGNCR | ICRNL | IXON);
+           tty_current.c_oflag &= ~OPOST;
+           tty_current.c_lflag &= ~(ECHO | ECHONL | ICANON | ISIG | IEXTEN);
+           tty_current.c_cflag &= ~(CSIZE | PARENB);
+           tty_current.c_cflag |= CS8;
+
+  if (tty_set_state(&tty_current, fdtty) < 0) {
+	fprintf(stderr, "Error: tty_open: cannot set tty state!\n");
+	return;
+  }
+
+  int tillEOL=0; //read till \n EndOfLine
+  int curPos=0; //Should this be a double or larger?
+  int seekTo=0; //used to store curPos when rewinding file
+  int half;
+  int ch;
+  tcflush(fdtty, TCIOFLUSH);
+  while ((ch =fgetc(fp)) != EOF ) {
+    curPos++;
+    if ((seekTo > 0 ) && (curPos>half)) {
+        //printf ("half:%d\n",half);
+        //sleep(1);
+        int t=seekTo-half;
+        half+=(t/2);
+        playSpeed+=3;
+        if (playSpeed > 8) {
+            playSpeed=8;
+        }
+    }
+    if ((seekTo >0) && (curPos > (seekTo-20))) {//we are 20 chars before we stopped
+        playSpeed=0;
+        seekTo=0;
+    }
+    /*tty way */
+    char a;
+    a=toascii(ch);
+    write(fdtty,&a,1);
+    
+    if ( ch == 13 ) { /* found an EOL */
+       tillEOL=0;
+    }
+        
+    if (playSpeed > 0 ) { //we are auto playing something
+        usleep(5*playSpeed*playSpeed*playSpeed); //pause
+    }
+    
+    /* dont do anything till we getc a char */
+    int r=getc(stdin);
+
+    while ( (r < 0) && (tillEOL==0) && (playSpeed==0) ) {
+    //while ((tillEOL==0) && (playSpeed==0) ) {
+        usleep(key_sleep);
+        r=getc(stdin);
+        /*printf ("playspeed:%d r:%d tillEOL:%d\r\n",playSpeed,r,tillEOL);
+        sleep(1);*/
+        if ((r>=48) && (r<=57) ) { // && playSpeed==0 ) { //0 was pressed
+            playSpeed=58-r; // set tp 0 - 9 speed
+            //printf ("playspeed:%d r:%d tillEOL:%d\r\n",playSpeed,r,tillEOL);
+            r=0;
+        }
+    }    
+    
+    if ( r == 113 || r==3) { //'q' or ctl-c
+        
+        printf ("\r\nQuitting on user command\r\n");
+        usleep(500);
+        tcflush(fdtty, TCIOFLUSH);
+        usleep (500);
+        myrestore_tty();
+        break;
+     }
+    else if ( r == 13 ) {
+        tillEOL=1; //Read until \n
+        playSpeed=0;
+    } 
+    else if ( r == 98 ) { //'b'
+       //TODO: something to rewind the file or re read the fle to curPos-50?
+       seekTo=curPos;
+       curPos=0;
+       half=seekTo-200;
+       rewind(fp);
+       //reset terminial
+       char a=0x1b;
+       char b=0x63;
+       write(fdtty,&a,1);
+       write(fdtty,&b,1);
+       //set speed to max
+       playSpeed=1;
+    }
+    else if ( r == 'h' ) {
+        help();
+        //rewind the file
+        seekTo=curPos;
+        curPos=0;
+        half=seekTo-200;
+        rewind(fp);
+        //reset terminial
+        char a=0x1b;
+        char b=0x63;
+        write(fdtty,&a,1);
+        write(fdtty,&b,1);
+        //set speed to max
+        playSpeed=1;
+    }
+
+    /*else if ((r>=48) && (r<=57) ) { // && playSpeed==0 ) { //0 was pressed
+        playSpeed=58-r; // set tp 0 - 9 speed
+        printf ("playspeed:%d r:%d tillEOL:%d\r\n",playSpeed,r,tillEOL);
+    } */ //for some reason this doesnt work here
+    else if (( r==32 ) && (playSpeed > 0)) {
+        playSpeed=0;
+    }
+    /*else if ( r > 0 && (playSpeed > 0) ) { //a different char was pressed, stop auto play
+        playSpeed=0;
+    }*/
+    
+  }
+  fclose(fp);
+  myrestore_tty();
+  close(fdtty);
+  close(fdtty_r);
+}
+
+/******************************************************************/
+d393 1
+a393 1
+    replay2(filename,mytty);
+@
+
+
+1.7
+log
+@minor changes
+@
+text
+@d31 1
+a31 2
+void replay2 (const char *, const char *);
+void replay2 (const char *, const char *);
+d34 2
+a35 2
+//int tty_get_state(struct termios *, int);
+//int tty_set_state(struct termios *, int);
+d50 8
+d59 2
+a60 1
+//man tty_ioctl
+d73 5
+a77 6
+    printf ("    n         Find the next batch (not yet implemented)\r\n");
+    printf ("    r         Find backwards (not implemented yet)*\r\n");
+    printf ("    b         Back up\r\n");
+    printf ("    1-9       Set replay speed, <space> to pause\r\n");
+    printf ("    <enter>   Display next line enter\r\n");
+    printf ("    <space>   Display next char\r\n");
+d79 6
+d96 226
+d367 1
+a367 1
+//SET TERMINAL TO DISABLE ECHO:
+d538 1
+a538 1
+	fprintf(stderr, "dip: tty_set_state\n");
+d561 1
+a561 1
+    replay(filename,mytty);
+d567 1
+@
+
+
+1.6
+log
+@last version
+@
+text
+@d28 9
+a36 1
+#define TTY_BUFSIZE	1024
+a38 1
+
+a54 1
+
+d65 1
+a65 1
+    printf ("    n         Find the nest batch (not yet implemented)\r\n");
+d102 1
+a102 1
+  fp = fopen(name, "r"); //TODO: make this a read/write, and rewind the file when done(karllos)
+a108 6
+
+  //if (! (fp=fopen( name,"r" ))) {
+  //    printf ("File Not Found: %s\n",name);
+  //    //sleep (1);
+  //    return;
+  //}
+d135 1
+a135 1
+//TODO: now ioctl set the tty
+d137 1
+a137 1
+	fprintf(stderr, "Error: tty_open: cannot get current state!\n");
+d144 1
+a144 1
+  int half;tcflush(fdtty, TCIOFLUSH);
+d146 1
+a178 1
+
+d190 1
+a190 5
+    }
+
+    //printf ("ttyin: %d\n",r);
+    
+    
+d282 1
+a282 2
+/******************************************************************/
+/******************************************************************/
+a306 2
+/******************************************************************/
+
+d308 4
+a311 4
+  if  (! isatty(fileno(stdout))) {
+    printf("is not tty\n");
+    return 1;
+  }
+d313 3
+a315 7
+  char *mytty=ttyname(fileno(stdout));
+  printf("Sending output to: %s\n",mytty);
+   //Get args
+    int opt;
+    char *filename="/tmp/script.1";
+    
+    
+d320 1
+a320 1
+    
+d322 4
+a325 21
+    
+    /*while ((opt = getopt(argc, argv, "f:")) != -1) {
+        switch (opt) {
+            case 'f':
+                filename = optarg;
+                break;
+            default: // ’?’ 
+              //fprintf(stderr, "Usage: %s -f filename\n", argv[0]);
+              fprintf(stderr, "Usage: %s -f filename arcc: %d\n",argv[0],argc);
+              exit(EXIT_FAILURE);
+        }
+    }
+  
+  */
+  
+  replay(filename,mytty);
+
+  printf("End replay\n");
+  usleep (5000);
+  
+  exit(EXIT_SUCCESS);
+@
+
+
+1.5
+log
+@before adding search
+@
+text
+@d178 1
+@
+
+
+1.4
+log
+@happy release
+@
+text
+@d11 17
+@
+
+
+1.3
+log
+@working version, supected fixed exit issues by setting sleeps
+@
+text
+@d79 4
+a82 3
+  if (! (fp=fopen( name,"r" ))) {
+      printf ("File Not Found: %s\n",name);
+      //sleep (1);
+d84 1
+d86 6
+d110 1
+d141 1
+a141 1
+    if ((seekTo >0) && (curPos > (seekTo-2))) {
+d333 1
+a333 1
+  usleep (3000);
+@
+
+
+1.2
+log
+@yeah, what he said
+@
+text
+@d241 1
+a241 1
+  sleep (2);
+a252 1
+  //char c=0x0a;
+d255 1
+a255 2
+  //write(fdtty,&c,1);
+   usleep(500);
+d324 1
+a324 6
+  usleep (1000);
+  /*char ** args;
+  args = alloca(sizeof(char *));
+  args[0]=NULL;
+  execv("reset",args); //cheap hack till we figure out how to do this via tty ioctl
+  */
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d146 1
+a146 1
+        usleep(1*playSpeed*playSpeed*playSpeed); //pause
+@

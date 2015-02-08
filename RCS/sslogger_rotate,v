@@ -1,0 +1,62 @@
+head	1.2;
+access;
+symbols;
+locks
+	ebrand:1.2; strict;
+comment	@# @;
+
+
+1.2
+date	2010.02.15.01.52.42;	author ebrand;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2010.01.15.21.10.24;	author ebrand;	state Exp;
+branches;
+next	;
+
+
+desc
+@0.92 version
+@
+
+
+1.2
+log
+@.92 release
+@
+text
+@/var/log/slog/*/*/slog-*.log {
+    compress
+    delaycompress
+    #monthly
+    #keep old logs for 2 years (720 days)
+    maxage 720
+    notifempty
+    missingok
+}
+
+"/var/log/slog/slod.log" {
+   # keep 2 years logs by default
+   rotate 24
+   monthly
+   missingok
+   notifempty
+   nocompress
+   create 644 slogger sloggers
+}
+
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d3 1
+a3 1
+    #delaycompress
+d10 11
+@

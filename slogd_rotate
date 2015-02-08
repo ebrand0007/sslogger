@@ -1,0 +1,32 @@
+"/var/log/slog/slogd.log" {
+   # keep 2 years logs by default
+   rotate 24
+   monthly
+   missingok
+   notifempty
+   nocompress
+   prerotate
+       service slogd start
+   endscript
+   create 644 slogger sloggers
+   postrotate
+       service slogd start
+   endscript
+}
+
+/var/log/slog/*/*/slogd-*.log {
+    compress
+    delaycompress
+    monthly
+    maxage 720
+    notifempty
+    missingok
+}
+
+#/var/log/slog/*/*/slogd-*.gz {
+#    monthly
+#    #keep old logs for 2 years (720 days)
+#    notifempty
+#    maxage 720
+#    missingok
+#}

@@ -1,0 +1,92 @@
+//gcc ex-serv-psk.c -l gnutls -o pks-server
+gcc slogd-server.c  -l gnutls -o slog-server -l pthread
+gcc slog-client.c tcp.c -l gnutls -o slog-client
+gcc slog-client3.c  -l gnutls -o slog-client3 tlstools.c -O0 -ggdb
+i=1; while ( [ $i -lt 100 ] ); do ./slog-client.rhel5-32;i=$(($i+1)); done
+//gcc ex-client-psk.c tcp.c -l gnutls -o pks-client
+cd ..;  rsync -av tls /data/home/ebrand/bi_home/src/redhat/SOURCES/slogd --delete -n; cd -
+gcc slog-client3.c tcp.c -l gnutls -o slog-client3 tlstools.c
+gcc slog-client3.c  -l gnutls -o slog-client3 tlstools.c -O0 -ggdb -Q
+
+#Note: the work on this tree has been moved to BX4:/home/ebrand/src/redhat/SOURCES/tls
+Docs: 
+   file:///data/home/ebrand/src/redhat/SOURCES/tls/gnutls-2.4.2/doc/gnutls.html#Example-server-PSK-connection
+
+Certs/keys are at:
+    /data/home/ebrand/src/redhat/SOURCES/tls/gnutls-2.4.2/doc/credentials
+    
+libvirt/private/serverkey.pem = key.pem (on slogd server only)
+libvirt/servercert.pem = cert.pem  (on slogd server only)
+/CA/cacert.pem = ca.pem  # (on all servers - only one needed on clients)
+
+------------------------------------------------------------------------------  
+
+TODO: 
+  remove all the \n and add printf("\n") in log_info in slogd-server.c
+  X test for existance of slogd.conf
+  XUse slogd.conf
+        port=xxx
+        listen=0.0.0.0
+        debug=0
+        cacert_file=
+        key=
+        perm=
+        tls_no_verify_certificate=0
+        tls_no_verify_host=0 //not yet
+        use_tls_pks=0
+   X options passed to program
+   X fork to daemon
+   X add the logging utils cut from sslogger.c
+   ? multiple listen IPs
+   ? is tls_no_verify_host needed?
+   
+sslogger.c
+   nedd to add slogd_server0=<fqdn of server>
+   need to add slogd_locahost=0 or 1 (true or false) to log files to localhost /var/log/slog/ *
+use function : daemon --user sslogger --check? in init script? --pid??
+rpm package must own /var/run/slogd owned by sslogger
+
+tls-client needs to be created...
+
+
+------------------------------------------------------------------------------  
+
+TODO:misc long term.....
+slogd.c::
+
+sslogger::
+    fscript is the filenumner to write to?
+    logCmd2:: create hook to remote tls slogd server
+    
+    dooutput::
+
+        char obuf[BUFSIZ];
+
+        my_strftime(obuf, sizeof obuf, "%c\r\n", localtime(&tvec));
+        fprintf(fscript, _("Sslogger started on %s"), obuf)
+    Always log local, delete local file on successfull net log, sync offline file when able to....
+    
+slog-client.c
+    read config file to get attribute:
+      use_cert_tls (dies if certs arent there)
+      see server examles for loading certs:ex-server.c::initializeGnuTLS
+      
+------------------------------------
+//TODO: this broken when negociating with thre slog server.. comment it out or fix the slogd-anon server
+slog-client::initialize_tls_session
+    /* TLS Anon Session Setup */
+    if (use_tls_anon==1 ) {
+
+ex-serc-pks.c::initializeGnuTLS
+
+TODO: create an include function tlsServer.c and tls_client.c
+  We would need to create a structure with all the related varables
+  need to remove localvars from lib?
+
+
+-----------------------------------------
+create slog.log file before running deamon
+
+In middle of writing tlstoos.c::recv
+Have to fix slog-client3.c to use new revc code, test
+And delete all un-needed crap.

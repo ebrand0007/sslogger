@@ -1,0 +1,165 @@
+head	1.1;
+access;
+symbols;
+locks
+	ebrand:1.1; strict;
+comment	@# @;
+
+
+1.1
+date	2010.01.16.14.42.44;	author ebrand;	state Exp;
+branches;
+next	;
+
+
+desc
+@beg=for=e adding slogd
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@.\" Process this file with
+.\" groff -man -Tascii foo.1
+.\"
+.TH slog 8 "February 2009" Linux "User Manuals"
+.SH NAME
+slog \- execute a command as another user
+.SH SYNOPSIS
+slog [-u user]
+.br
+slog [-u user] [-h] [command and args]
+.br
+sreplay <filename>
+.SH DESCRIPTION
+slog is session keystroke logging utility and allows  permitted users to execute commands, or open interactive shells as the superuser or another user. When used in interactive session mode, keystrokes are recorded in a special file. Privileged user escalation is set by standard sudo rules in sudoers file. A tty is required for interactive sessions
+
+slog also provides the ability to run in command mode in which a command can be executed as another user. This allows slog to be used within a script in non-interactive script. When running this mode, stdin is closed.
+
+Commands and interactive sessions write an entry to syslog. The default keystroke log files are written to /var/log/slog/<hostname>-<user1>-<user2>.<date>.log. The  sreplay command is included to review session log files created via sslogger, creating an audit trail of all actions performed by users.
+
+.SH OPTIONS
+.B slog
+accepts the following command line options:
+.br
+.TP
+.B -u <USER> 
+Run command or interactive shell as USER
+.TP
+.B [command and args]
+Execute "command and args" instead if interactive shell. Provides ability run sslogger within a script. non-interactive mode
+.TP
+.B -h
+Stay in current working directory, do not cd to USER home dir
+.TP
+.TP
+.B -d
+Debug
+.B -f
+Flush buffer on every newline
+.br
+.TP
+The sreplay command can be used to sreplay recorded sessions
+.br
+.TP
+.B sreplay <filename>
+Replays interactive session identified by filename
+
+.SH RETURN VALUES
+In interactive mode, always exits 0. 
+
+When run in a non-interactive mode, slog returns the value of the command being run.
+
+.SH FILES
+.I /etc/sslogger.conf
+.RS
+Configuration file
+.RE
+.I /etc/sudoers
+.RS
+Sudo Configuration file - see man 
+.BR sudoers (5)
+for details
+.RE
+.I /var/log/slog
+.RS
+Default directory in which sessions are logged
+.SH CONFIGURATION FILES
+.TP
+Sample entry for user1 and user2 in /etc/sudoers:
+#Group Privileged access
+.br
+User_Alias SSERS = user1,user2
+.br
+Cmnd_Alias SL = /usr/bin/sslogger
+.br
+SSERS ALL = (root,user3) NOPASSWD: SL
+.br
+# user1 and user2 can now get an interactive root shell for root and user3
+.br
+# while logging all keystrokes
+.br
+.TP
+Configuration file /etc/sslogger.conf:
+.br
+#
+#Log output of all commands, even non interactive (1 is true). Default 0
+.br
+log_all_cmds=0
+.br
+#Minimum Comment length in chars
+.br
+#an entry of 0 will skip reason for asking for a shell
+.br
+min_comment=10                                                  
+.br
+# 
+.br
+#Maximum Comment Length in chars written to syslog                
+.br
+#Comment Length in the session log file  is currently unlimited                                
+.br
+max_comment=60
+.br
+# To allow normal users replay access to log files they create, Set below to 1
+.br
+allow_user_replay=1
+.TP
+/etc/group:
+#To allow user2 to replay all session files, add user2 to the sloggers group
+.br
+sloggers:x:480:user2
+.SH EXAMPLES
+Note: the following examples assume suitable sudoers(5) entries.
+.TP
+$ slog
+.br
+- Obtains an interactive shell as root.
+.TP
+$ slog ls -l /root
+.br
+- Runs a command as root, then exists.
+.TP
+$ slog -u user2
+.br
+- Obtains an interactive shell as another user.
+.TP
+$ slog -u user2 -h
+.br
+- Obtains an interactive shell as user2 whilst remaining in the current working directory.
+.TP
+$ sreplay <filename>
+.br
+- Replays an interactive session log (may require user to be added to sloggers group, see (CONFIGURATION FILES)
+.SH BUGS
+If you feel you have found a bug in sslogger, please submit a bug report at http://sslogger.sourceforge.net
+.SH SUPPORT
+Limited free support is available via the sslogger-users mailing list, see http://sslogger.sourceforge.net to subscribe or search the archives.
+.SH AUTHOR
+Edward Brand  <edbrand@@brandint.com>
+.SH SEE ALSO
+slog(8) sreplay(8) sslogger(8) sudo(8), sudoers(8), su(2)
+@

@@ -1,0 +1,56 @@
+Ver 0.90.14 Dec 15 2012 E. Brnad
+		- incorporated backward gnutls/gcrypt routines. 
+		- Will build on RHEL 4 and Sol10 with native SFWgnutls paclage
+Ver 0.98     Nov 1 2010 E. Brand
+		- addition Sun compatibility issues 
+		- fixed bug: sreplay rewind beyond filepos 0 issue
+		- sslogger: bug fix min cmd length requirement
+		- sslogger: fix bug truncating reason when passed on cmd line
+		- Added logging of sslogger-slogd child pid to syslog and slogd.log
+		- sreplay handel kill sinal
+		- added \r\n at EOL  when logging remote commands
+Ver 0.97     Oct 22 2010 E.Brand
+                - Now compiles cleanly on sun using sfw packages. See INSTALL
+Ver 0.96     Jun 22 2010 E. Brand
+                - Fixes to manpages 
+                - Fixed segfault bug when attempting to wite to local log, when logging is disabled
+                - Moved sslogger.conf to /etc/sslogger.d/sslogger.conf
+Ver 0.95     Jun 8 2010 E. Brand
+		- Fixes to manpages, mkSlogCerts & config files
+		  to use /etc/sslogger.d/* as config dir
+
+Ver .94       May 5 2010 iE. Brand
+		- exist staus for slogd daemon
+		- updated slogd.rc to fedora standards
+		- slogd: now returns remote slod servername
+                - added rslog
+Ver .93       April 19 2010 E. Brand
+		- Removed pks auth as it was broken
+		- Moved tlstools.c to tlstools_client1.c / rewrite
+Ver .92       Jan 01 2009 E. Brand
+		-  tls loggining intagration in sslogger.c
+Ver .91       Dec 29 2009 E. Brand
+		- Added slogd tls server to recieve logs over tls session
+		- Updated man pages
+		- Makefile now uses $(man5dir)
+Ver 9-46:     July 7 2009 E. Brand
+		- updated man pages and cmd help
+		- enabled find in sreplay
+Ver 09-40:    July 5 2009 E brand
+		- Added checks to slog.c for null options after -c
+                - set slCmd to /0 on initial assignment
+                - split ssloger man page to ssloger, slog and sreplay
+                - Changed default permission for of log dir to allow normal users read access
+Ver 0.9-0.26: Mar 27 2009 Ed Brand
+		- Added my_sleep to replay function
+Ver 0.9-0.25: Mar 26 2009 Ed Brand
+		- Change replay command to more interactive and more user friendy. 
+		- Updated Man Page to reflect New options in replay
+Ver 0.9-0.24: 
+		- quoted command and shell in logfiles; fixed ';' after as:
+Ver 0.9-0.23: 
+		- fixed segfault when running non interactive
+Ver 0.0-0.17: 
+		- changed logCmd sub to enable wacking of syslog messages
+Ver 0.9-0.15: 
+		- modified sl to accept -c commands without quotes

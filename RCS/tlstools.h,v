@@ -1,0 +1,206 @@
+head	1.5;
+access;
+symbols;
+locks
+	ebrand:1.5; strict;
+comment	@ * @;
+
+
+1.5
+date	2010.12.17.16.13.57;	author ebrand;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2010.05.09.22.28.37;	author ebrand;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2010.04.20.00.28.37;	author ebrand;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2010.01.06.23.04.53;	author ebrand;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2009.12.30.17.16.52;	author ebrand;	state Exp;
+branches;
+next	;
+
+
+desc
+@incorporating into package
+@
+
+
+1.5
+log
+@.98.14 release
+@
+text
+@#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <pthread.h>
+#include <fcntl.h>
+#include <gnutls/gnutls.h>
+#include <gnutls/x509.h>
+#include <gcrypt.h> /* for gcry_control */
+
+/* use pthread safe gcrypt */
+/*GCRY_THREAD_OPTION_PTHREAD_IMPL; */
+
+
+/* for gnutls 1.2 version found in sol 10 and RHEL 4, borrowed from libvirt */
+#include "gnutls_1_0_compat.h"
+
+/** The maximum length of a a fully escaped domain name C string. This
+* is calculated like this: RFC1034 mandates maximum length of FQDNs
+* is 255. The maximum label length is 63. Lets make it 1024 to be safe,
+* after all its 2009 and bytes are cheap*/
+#define MAXFQDNLEN 1024
+
+#define TLSTOOLS_AUTH_ANON 1
+#define TLSTOOLS_AUTH_X509CERT 2
+#define TLSTOOLS_AUTH_PKS 3
+#define TLSTOOLS_MSG_LEN 512
+#define TLSTOOLS_MAX_FILE_NAME_LEN 1024 /* max file path/name len for cert files */
+#define MAX_REMOTE_LOGFILE_LEN 1024 /* max len for remote log file names */
+
+/* shared with server, and in config.h */
+
+#define DH_BITS 1024 /* number of bits to use in DH encryption TODO: put this in the structure */
+
+gnutls_anon_client_credentials_t tlstools_anon_cred; 
+gnutls_certificate_credentials_t tlstools_x509_cred; 
+
+/* TLS cert files*/
+#define KEY_FILE "/etc/pki/slog/private/serverkey.pem"
+#define CERT_FILE "/etc/pki/slog/servercert.pem"
+#define CAFILE "/etc/pki/slog/CA/cacert.pem"
+char *tlstools_key_file; 
+char *tlstools_cert_file;
+char *tlstools_ca_file; /* only requiresd on servers, or when using TLSTOOLS_AUTH_X509CERT */
+char *tlstools_crl_file; /* revoked certs not implemented at the moment */
+char *tlstools_client_server; /* slogd server */
+int tlstools_client_serverport; /* slogd server port */
+int tlstools_client_authtype; /* TLSTOOLS_AUTH_ANON or TLSTOOLS_AUTH_X509CERT */
+int tlstools_client_debug;
+
+@
+
+
+1.4
+log
+@happy version before slogd returns remote file name
+@
+text
+@d17 1
+d22 3
+d39 4
+a42 2
+#define DH_BITS 1024 /* number of bits to use in DH encryption TODO: put this in the structure*/
+gnutls_anon_client_credentials_t tlstools_anon_cred; /* TODO: these should be tlstools_client_anon_cred */
+a43 1
+gnutls_psk_server_credentials_t tlstools_psk_cred;
+@
+
+
+1.3
+log
+@work in progress for tsltools_client.h
+@
+text
+@d40 4
+a43 1
+/* TLS cert files TODO: these should be part of the structure?*/
+d48 5
+@
+
+
+1.2
+log
+@Latest tweeks, disabled signal hancler to test tlstools SIGPIPE overide
+@
+text
+@d7 1
+d13 1
+d15 1
+d20 1
+d32 1
+a44 48
+
+
+struct tlstools_client 
+{
+    long socket; /*client socket fd */
+    long socket_sd; /* Socket fd */
+    gnutls_session_t session;
+    int tlstool_authtype; /* Auth can be TLS_TOOLS_AUTH_ANON _X509CERT or _PKS */
+    char *server; //[MAXFQDNLEN];  /* server name or ip */
+    int port; /* server Port */
+    char msg[TLSTOOLS_MSG_LEN]; /* string to hold error messages */
+    int err; /* set in tls send/recieve, is tls_error on failure */
+    int debug;
+    int dh_bits;
+};
+
+
+
+struct tlstools_server
+{
+    long socket; /*client socket fd */
+    gnutls_session_t session;
+    int tlstool_authtype; /* Auth can be TLS_TOOLS_AUTH_ANON _X509CERT or _PKS */
+    char *server;  /* server name or ip */
+    int port; /* server Port */
+    char tlstools_error[256]; /* string to hold error messages */
+    int tls_errno; /* set in tls send/recieve, is tls_error on failure */
+    int debug;
+    gnutls_dh_params_t dh_params; /*not used on clients*/ 
+    int dh_bits;
+};
+
+
+
+
+ 
+/* get the gnutls error string */
+extern  char* tlstools_get_tls_errstr (struct tlstools_client *tt_cli);
+extern void tlstools_end_session(struct tlstools_client *tlsclient);
+extern int init_tls_client(struct tlstools_client *tlsclient);
+extern gnutls_session_t initialize_tls_session (struct tlstools_client *tlsclient);
+extern int tcp_connect (struct tlstools_client *tlsclient);
+extern void tcp_close (struct tlstools_client *tlsclient);
+extern int initializeGnuTLS (struct tlstools_client *tlsclient);
+extern int pskfunc (gnutls_session_t session, const char *username, gnutls_datum_t * key);
+extern int checkFile(const char *type, const char *file, struct tlstools_client *tlsclient);
+extern void check_alert (gnutls_session_t session, int ret);
+extern int tlstools_recv (struct tlstools_client *tlsclient, void *msg,int msglen);
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d26 1
+a26 1
+#define TLSTOOLS_MSG_LEN 200
+d83 1
+a83 1
+extern initializeGnuTLS (struct tlstools_client *tlsclient);
+@

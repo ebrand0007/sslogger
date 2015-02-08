@@ -1,0 +1,841 @@
+head	1.5;
+access;
+symbols;
+locks
+	root:1.5; strict;
+comment	@ * @;
+
+
+1.5
+date	2008.12.05.19.40.03;	author root;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2008.12.01.17.32.09;	author root;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2008.11.25.17.21.18;	author root;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2008.11.20.22.31.05;	author root;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2008.11.18.22.37.37;	author root;	state Exp;
+branches;
+next	;
+
+
+desc
+@before changing login option , -i to -l, to -x etc
+@
+
+
+1.5
+log
+@before changing fopen
+@
+text
+@/*
+* Copyright (c) 1980 Regents of the University of California.
+* All rights reserved.
+*
+* Redistribution and use in source and binary forms, with or without
+* modification, are permitted provided that the following conditions
+* are met:
+* 1. Redistributions of source code must retain the above copyright
+*    notice, this list of conditions and the following disclaimer.
+* 2. Redistributions in binary form must reproduce the above copyright
+*    notice, this list of conditions and the following disclaimer in the
+*    documentation and/or other materials provided with the distribution.
+* 3. All advertising materials mentioning features or use of this software
+*    must display the following acknowledgement:
+*	This product includes software developed by the University of
+*	California, Berkeley and its contributors.
+* 4. Neither the name of the University nor the names of its contributors
+*    may be used to endorse or promote products derived from this software
+*    without specific prior written permission.
+*
+* THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+* ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+* ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+* FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+* DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+* OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+* HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+* LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+* OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+* SUCH DAMAGE.
+*/
+
+/*
+* 1999-02-22 Arkadiusz Mi�kiewicz <misiek@@pld.ORG.PL>
+* - added Native Language Support
+*
+* 2000-07-30 Per Andreas Buer <per@@linpro.no> - added "q"-option
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <paths.h>
+#include <time.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <termios.h>
+#include <sys/ioctl.h>
+#include <sys/time.h>
+#include <sys/file.h>
+#include <sys/signal.h>
+#include <pwd.h>
+#include "nls.h"
+
+// Default Log Directory
+#ifndef LOG_DIR
+#define LOG_DIR "/var/log/ss"
+#endif
+
+// Default config file
+#ifndef CONF_FILE 
+#define CONF_FILE "/etc/slogger.conf"
+#endif
+
+#ifdef __linux__
+#include <unistd.h>
+#include <string.h>
+#endif
+
+#ifdef HAVE_LIBUTIL
+#include <pty.h>
+#endif
+
+//for MAXHOSTNAMELEN
+//#include <asm/param.h>?
+#ifndef MAXHOSTNAMELEN
+#define MAXHOSTNAMELEN 64
+#endif
+
+#define STRINGIFY(x) XSTRINGIFY(x)
+#define XSTRINGIFY(x) #x
+
+//Prototypes
+void finish(int);
+void done(void);
+void fail(void);
+void resize(int);
+void fixtty(void);
+void getmaster(void);
+void getslave(void);
+void doinput(void);
+void dooutput(void);
+void doshell(void);
+void undo_setuid(void);
+void do_setuid(void);
+int read_conf(const char *key, char **value);
+
+
+char	*shell;
+FILE	*fscript;
+FILE    *pinput; // pipe command input
+int	master;
+int	slave;
+int	child;
+int	subchild;
+char	*fname;
+
+struct	termios tt;
+struct	winsize win;
+int	lb;
+int	l;
+#ifndef HAVE_LIBUTIL
+char	line[] = "/dev/ptyXX";
+#endif
+int	aflg = 0;
+char	*cflg = NULL;
+int	fflg = 0;
+int	qflg = 0;
+int	tflg = 0;
+int log_all_cmds=0;
+
+static char *progname;
+
+#define LINE_LEN 100
+int read_conf( const char *key, char **value) {
+    //reads config_file looking fir key, 
+    // sets  value if found, null otherwise
+    // returns -1 on FNF, 0 on keynot found, 1 on found
+    FILE *fp;
+    char line[LINE_LEN];
+    int end;
+    int retVal=0;
+    int keyLen=strlen(key);
+    const char *conf_file=STRINGIFY(CONF_FILE);
+    
+    if ( !(fp = fopen(conf_file, "r")) ) {
+        return(-1); /* Can't open file */
+    }
+    
+    while (fgets(line, LINE_LEN, fp)) {
+        /* All options are key=value (no spaces)*/
+        //printf("line:%s",line);
+        if (strncmp(line, key, keyLen) == 0) {
+            if (*value!=NULL) free(*value);
+            end = strlen(line);
+            if (line[end-1] == '\n')
+                line[end-1] = 0; /* Remove trailing newline */
+        *value = strdup(line+keyLen+1); //add equal to  key=val
+        //printf("Found key:%s val:%s\n",key,*value);
+        if (fp!=NULL) fclose(fp);
+        return(1); //happy return
+        }
+    }
+    return 0; //unhappy return
+}
+
+/* Remember the effective and real UIDs. */
+static uid_t euid, ruid;
+static gid_t geuid,gruid;
+//TODO: groupid!
+
+static void
+die_if_link(char *fn) {
+    struct stat s;
+    if (lstat(fn, &s) == 0 && (S_ISLNK(s.st_mode) || s.st_nlink > 1)) {
+        fprintf(stderr,
+            _("Warning: `%s' is a link.\n"
+            "Use `%s [options] %s' if you really "
+            "want to use it.\n"
+            "Script not started.\n"),
+            fn, progname, fn);
+        exit(1);
+    }
+}
+
+/*
+* Stop extremely silly gcc complaint on %c:
+*  warning: `%c' yields only last 2 digits of year in some locales
+*/
+static void
+my_strftime(char *buf, size_t len, const char *fmt, const struct tm *tm) {
+    strftime(buf, len, fmt, tm);
+}
+
+/*
+* script -t prints time delays as floating point numbers
+* The example program (scriptreplay) that we provide to handle this
+* timing output is a perl script, and does not handle numbers in
+* locale format (not even when "use locale;" is added).
+* So, since these numbers are not for human consumption, it seems
+* easiest to set LC_NUMERIC here.
+*/
+
+int
+main(int argc, char **argv) {
+    /* unset suid bits */
+    ruid = getuid ();
+    gruid = getgid ();
+    euid = geteuid ();
+    geuid = getegid ();
+    undo_setuid ();
+    
+
+    extern int optind;
+    char *p;
+    int ch;
+
+    progname = argv[0];
+    if ((p = strrchr(progname, '/')) != NULL)
+        progname = p+1;
+
+
+    setlocale(LC_ALL, "");
+    setlocale(LC_NUMERIC, "C");	/* see comment above */
+    bindtextdomain(PACKAGE, LOCALEDIR);
+    textdomain(PACKAGE);
+
+    if (argc == 2) {
+        if (!strcmp(argv[1], "-V") || !strcmp(argv[1], "--version")) {
+            printf(_("%s (%s)\n"),
+                progname, PACKAGE_STRING);
+            return 0;
+        }
+    }
+
+    while ((ch = getopt(argc, argv, "ac:fqt")) != -1)
+        switch((char)ch) {
+        case 'a':
+            aflg++;
+            break;
+        case 'c':
+            cflg = optarg;
+            break;
+        case 'f':
+            fflg++;
+            break;
+        case 'q':
+            qflg++;
+            break;
+        case 't':
+            tflg++;
+            break;
+        case '?':
+        default:
+            fprintf(stderr,
+                _("usage: script [-a] [-f] [-q] [-t] [file]\n"));
+            exit(1);
+        }
+    argc -= optind;
+    argv += optind;
+
+    //Turn on flushing by default
+    //fflg++;
+   
+    /* log name format in fname*/
+    char hname[MAXHOSTNAMELEN];
+    int r=gethostname(hname,sizeof(hname));
+    //get user
+    char *ruser=getlogin();
+    if (ruser == NULL ) {
+        printf("Unabel to determine user id\n");
+        //exit(EXIT_FAILURE);
+    }
+    time_t tvec;
+    char ldate[BUFSIZ];
+    tvec = time((time_t *)NULL);
+    //printf ("euid: %d\n",euid);
+    //printf ("ruid: %d\n",ruid);
+
+    /* Get options from congig file */
+    char *value;
+    int found=0;
+    found=read_conf("log_all_cmds",&value);
+    if (found) {
+        log_all_cmds=atoi(value);
+    }
+    printf("log_all_cmds=%d\n",log_all_cmds);
+    exit(EXIT_SUCCESS);
+    
+    //get the euid name of the process
+    struct passwd *upasswd;
+    upasswd=getpwuid((uid_t)ruid);
+    if (!upasswd) {
+        printf("Unknown euid\n");
+        /*exit(EXIT_FAILURE);*/
+    }
+    shell=upasswd->pw_shell;
+    printf("DEBUG: euid:%s shell:%s\n",upasswd->pw_name,shell);
+    //shell = getenv("SHELL");
+    if (shell == NULL)
+        shell = _PATH_BSHELL;
+    setenv("SHELL",shell,1);
+    my_strftime(ldate, sizeof ldate, "%Y.%m.%d-%H:%M:%S.log", localtime(&tvec));
+    
+    const char *log_dir=STRINGIFY(LOG_DIR);
+    asprintf(&fname,"%s/ss-%s-%s-%s-%s",log_dir,hname,ruser,upasswd->pw_name,ldate);
+    /* end log name format */
+
+        
+    //fprintf(fscript, _("\nScript done on %s\r"), ldate);
+
+    do_setuid ();
+    if ((fscript = fopen(fname, aflg ? "a" : "w")) == NULL) {
+        undo_setuid();
+        perror(fname);
+        fail();
+    }
+    printf ("passed open\n");
+    undo_setuid();
+
+    getmaster();
+    if (!qflg)
+        printf(_("Script started, file is %s\n"), fname);
+    fixtty();
+
+    (void) signal(SIGCHLD, finish);
+    child = fork();
+    if (child < 0) {
+        perror("fork");
+        fail();
+    }
+    if (child == 0) {
+        subchild = child = fork();
+        if (child < 0) {
+            perror("fork");
+            fail();
+        }
+        if (child) {
+            dooutput();
+        }
+        else {
+            doshell();
+        }
+    } else
+        (void) signal(SIGWINCH, resize);
+    doinput();
+
+    return 0;
+}
+
+/* Restore the effective UID to its original value. */
+void
+do_setuid (void)
+{
+    int status;
+
+    // user bits
+    #ifdef _POSIX_SAVED_IDS
+    status = seteuid (euid);
+    #else
+    status = setreuid (ruid, euid);
+    #endif
+    if (status < 0) {
+        fprintf (stderr, "Couldn't set uid.\n");
+        exit (status);
+    }
+    //group bits
+    #ifdef _POSIX_SAVED_IDS
+    status = setegid (geuid);
+    #else
+    status = setregid (gruid, geuid);
+    #endif
+    if (status < 0) {
+        fprintf (stderr, "Couldn't set uid.\n");
+        exit (status);
+    }
+
+    
+}
+
+/* Set the effective UID to the real UID. */
+void
+undo_setuid (void)
+{
+    int status;
+    //user bits
+    #ifdef _POSIX_SAVED_IDS
+    status = seteuid (ruid);
+    #else
+    status = setreuid (euid, ruid);
+    #endif
+    if (status < 0) {
+        fprintf (stderr, "Couldn't set uid.\n");
+        exit (status);
+    }
+    //group bits
+    #ifdef _POSIX_SAVED_IDS
+    status = setegid (gruid);
+    #else
+    status = setregid (geuid, gruid);
+    #endif
+    if (status < 0) {
+        fprintf (stderr, "Couldn't set uid.\n");
+        exit (status);
+    }
+
+ 
+}
+
+
+void
+doinput() {
+    register int cc;
+    char ibuf[BUFSIZ];
+
+    (void) fclose(fscript);
+
+    while ((cc = read(0, ibuf, BUFSIZ)) > 0)
+        (void) write(master, ibuf, cc);
+    done();
+}
+
+#include <sys/wait.h>
+
+void
+finish(int dummy) {
+    int status;
+    register int pid;
+    register int die = 0;
+
+    register int cc;
+    time_t tvec;
+    char obuf[BUFSIZ];
+    struct timeval tv;
+    double oldtime=time(NULL), newtime;
+    tvec = time((time_t *)NULL);
+
+
+    while ((pid = wait3(&status, WNOHANG, NULL)) > 0) {
+        if (pid == child) {
+            die = 1;
+            //printf ("Child signal\n");
+            
+        }
+        //printf ("Waiting\n");
+    }
+    if (die)
+        //sleep (2);
+        done();
+}
+
+void
+resize(int dummy) {
+    /* transmit window change information to the child */
+    (void) ioctl(0, TIOCGWINSZ, (char *)&win);
+    (void) ioctl(slave, TIOCSWINSZ, (char *)&win);
+
+    kill(child, SIGWINCH);
+}
+
+
+
+void
+dooutput() {
+    register int cc;
+    time_t tvec;
+    char obuf[BUFSIZ];
+    struct timeval tv;
+    double oldtime=time(NULL), newtime;
+
+    (void) close(0);
+#ifdef HAVE_LIBUTIL
+     (void) close(slave);
+#endif
+    tvec = time((time_t *)NULL);
+    my_strftime(obuf, sizeof obuf, "%c\r\n", localtime(&tvec));
+    fprintf(fscript, _("Script started on %s"), obuf);
+
+    for (;;) {
+        if (tflg)
+            gettimeofday(&tv, NULL);
+        cc = read(master, obuf, sizeof (obuf));
+        if (cc <= 0)
+            break;
+        if (tflg) {
+            newtime = tv.tv_sec + (double) tv.tv_usec / 1000000;
+            fprintf(stderr, "%f %i\n", newtime - oldtime, cc);
+            oldtime = newtime;
+        }
+        (void) write(1, obuf, cc);
+        (void) fwrite(obuf, 1, cc, fscript);
+        if (fflg)
+            (void) fflush(fscript);
+    }
+    done();
+}
+
+void
+doshell() {
+    char *shname;
+
+#if 0
+    int t;
+
+    t = open(_PATH_TTY, O_RDWR);
+    if (t >= 0) {
+        (void) ioctl(t, TIOCNOTTY, (char *)0);
+        (void) close(t);
+    }
+#endif
+
+    getslave();
+    (void) close(master);
+    (void) fclose(fscript);
+    (void) dup2(slave, 0);
+    (void) dup2(slave, 1);
+    (void) dup2(slave, 2);
+    (void) close(slave);
+
+    shname = strrchr(shell, '/'); //split at '/'
+    if (shname)
+        shname++;
+    else
+        shname = shell;
+
+    if (cflg) {
+            //TODO: dump command to syslog
+            if (log_all_cmds) {
+            //execl(shell, shname, "-c", cflg, NULL);
+            //Do popen here, read the output & set the exit code
+            // what about piping stdin?
+            pinput=popen(cflg,"r");
+            if (!pinput)
+            {
+                fprintf (stderr,
+                        "Unable to run command\n");
+                        exit(EXIT_FAILURE);
+            }            
+            //read_from_pipe
+            int c;
+            while ((c = fgetc (pinput)) != EOF)
+                putchar (c);
+    
+            pclose(pinput);
+            
+            usleep(300000); //give other thread chance to read
+            
+            //TODO send signal to parent i a exiting
+            /*printf("terew\n");
+            raise(SIGCHLD);
+            printf("terew\n");
+            sleep(1);*/
+            
+            exit(EXIT_SUCCESS);
+            //return EXIT_SUCCESS; 
+        }
+        else { //execv the process, do not record output
+        }
+    }        
+    
+    else {
+        //execl(shell, shname, "-l","-i", NULL);
+        printf ("Debug execv %s %s\n",shell, shname);
+        execl(shell, shname, NULL);
+    }
+    perror(shell);
+    fail();
+}
+
+void
+fixtty() {
+    struct termios rtt;
+
+    rtt = tt;
+    cfmakeraw(&rtt);
+    rtt.c_lflag &= ~ECHO;
+    (void) tcsetattr(0, TCSAFLUSH, &rtt);
+}
+
+void
+fail() {
+
+    (void) kill(0, SIGTERM);
+    done();
+}
+
+void
+done() {
+    time_t tvec;
+    if (subchild) {
+        if (!qflg) {
+            char buf[BUFSIZ];
+            tvec = time((time_t *)NULL);
+            my_strftime(buf, sizeof buf, "%c\r\n", localtime(&tvec));
+            fprintf(fscript, _("\nScript done on %s"), buf);
+        }
+        (void) fclose(fscript);
+        (void) close(master);
+    } else {
+        (void) tcsetattr(0, TCSAFLUSH, &tt);
+        if (!qflg)
+            printf(_("Script done, file is %s\r\n"), fname);
+    }
+    exit(0);
+}
+
+void
+getmaster() {
+#ifdef HAVE_LIBUTIL
+    (void) tcgetattr(0, &tt);
+    (void) ioctl(0, TIOCGWINSZ, (char *)&win);
+    if (openpty(&master, &slave, NULL, &tt, &win) < 0) {
+        fprintf(stderr, _("openpty failed\n"));
+        fail();
+    }
+#else
+    char *pty, *bank, *cp;
+    struct stat stb;
+
+    pty = &line[strlen("/dev/ptyp")];
+    for (bank = "pqrs"; *bank; bank++) {
+        line[strlen("/dev/pty")] = *bank;
+        *pty = '0';
+        if (stat(line, &stb) < 0)
+            break;
+        for (cp = "0123456789abcdef"; *cp; cp++) {
+            *pty = *cp;
+            master = open(line, O_RDWR);
+            if (master >= 0) {
+                char *tp = &line[strlen("/dev/")];
+                int ok;
+
+                /* verify slave side is usable */
+                *tp = 't';
+                ok = access(line, R_OK|W_OK) == 0;
+                *tp = 'p';
+                if (ok) {
+                    (void) tcgetattr(0, &tt);
+                        (void) ioctl(0, TIOCGWINSZ,
+                        (char *)&win);
+                    return;
+                }
+                (void) close(master);
+            }
+        }
+    }
+    fprintf(stderr, _("Out of pty's\n"));
+    fail();
+#endif /* not HAVE_LIBUTIL */
+}
+
+void
+getslave() {
+#ifndef HAVE_LIBUTIL
+    line[strlen("/dev/")] = 't';
+    slave = open(line, O_RDWR);
+    if (slave < 0) {
+        perror(line);
+        fail();
+    }
+    (void) tcsetattr(slave, TCSAFLUSH, &tt);
+    (void) ioctl(slave, TIOCSWINSZ, (char *)&win);
+#endif
+    (void) setsid();
+    (void) ioctl(slave, TIOCSCTTY, 0);
+}
+@
+
+
+1.4
+log
+@before adding conf file
+@
+text
+@d55 1
+d60 5
+d75 1
+a75 1
+//#include <asm/param.h>
+d80 3
+a83 1
+
+d96 2
+d120 1
+d124 33
+d270 10
+d294 3
+a296 1
+    asprintf(&fname,LOG_DIR"/ss-%s-%s-%s-%s",hname,ruser,upasswd->pw_name,ldate);
+d299 1
+d308 1
+d517 32
+a548 27
+        //execl(shell, shname, "-c", cflg, NULL);
+        //Do popen here, read the output & set the exit code
+        // what about piping stdin?
+        pinput=popen(cflg,"r");
+        if (!pinput)
+        {
+            fprintf (stderr,
+                    "Unable to run command\n");
+                    exit(EXIT_FAILURE);
+        }            
+        //read_from_pipe
+        int c;
+        while ((c = fgetc (pinput)) != EOF)
+            putchar (c);
+
+        pclose(pinput);
+        
+        usleep(300000); //give other thread chance to read
+        
+        //TODO send signal to parent i a exiting
+        /*printf("terew\n");
+        raise(SIGCHLD);
+        printf("terew\n");
+        sleep(1);*/
+        
+        exit(EXIT_SUCCESS);
+        //return EXIT_SUCCESS; 
+@
+
+
+1.3
+log
+@using users login shell instaead of /bin/sh
+@
+text
+@d115 1
+d154 1
+d156 1
+d289 1
+d299 12
+d318 1
+a318 1
+
+d328 12
+@
+
+
+1.2
+log
+@before changing shell to ruser shell
+@
+text
+@d230 6
+a235 4
+
+    printf("DEBUG: euid:%s shell:%s\n",upasswd->pw_name,upasswd->pw_shell);
+
+
+a249 4
+    shell = getenv("SHELL");
+    if (shell == NULL)
+        shell = _PATH_BSHELL;
+
+d424 1
+a424 1
+    shname = strrchr(shell, '/');
+a441 5
+        /*FILE * fmaster;
+        if (!(fmaster=fdopen(master,"w"))) {
+            perror("Unable to open master");
+            return;
+        }*/
+d447 2
+a448 6
+        /*if (pclose (pinput) != 0)
+        {
+            fprintf (stderr,        
+                    "Could not run or other error.\n");
+            //return EXIT_FAILURE;
+        }*/
+a450 1
+        usleep(300000); //give other thread chance to read
+d460 5
+a464 3
+    else
+        execl(shell, shname, "-l","-i", NULL);
+
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@a40 4
+/*
+* script
+* on install  chmod 6555 /home/ebrand/bin/src/ss/sscript
+*/
+d52 1
+d74 2
+a211 2
+    // TODO: setuid - info setuid
+    //char *ruser="ebrand";
+d213 4
+d220 14
+d235 1
+a235 1
+    asprintf(&fname,LOG_DIR"/ss-%s-%s-%s",hname,ruser,ldate);
+d473 1
+a473 1
+        execl(shell, shname, "-i", NULL);
+@

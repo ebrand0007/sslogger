@@ -1,0 +1,142 @@
+head	1.1;
+access;
+symbols;
+locks
+	ebrand:1.1; strict;
+comment	@# @;
+
+
+1.1
+date	2010.06.24.04.01.29;	author ebrand;	state Exp;
+branches;
+next	;
+
+
+desc
+@updated sslogger.conf path
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@.\" Process this file with
+.\" groff -man -Tascii foo.1
+.\"
+.TH slogd 8 "January 2010" Linux "User Manuals"
+.SH NAME
+slogd \- remote log collection server for sslogger
+.SH SYNOPSIS
+slog -d 
+.br
+
+.SH DESCRIPTION
+slogd is a log collection daemon for sslogger. It provides a method log remote sslogger sessions to a central log server over a secure TLS channel. New connections are logged to /var/log/slog/slogd, and the session to /var/log/slog/<month-dir>/slogd-<server>-<user>-<date>.log
+
+The default configurations use anonymous authentication by default. Security can be tightened by switching to authentication mode to x509 certs in the configuration file. This will require creating signed certificates, and pushing to all clients. A example script to generate certificates is includes in the source package. See mkSlogCerts.
+
+The sreplay command can be used to sreplay recorded sessions
+.SH OPTIONS
+.B slogd
+accepts the following command line options:
+.br
+.TP
+.B -d 
+Fork process off and run as daemon
+.TP
+.B -p
+Pidfile
+.TP
+.B -d
+Debug
+.B -v
+Verbose debug level [1-9]
+
+.RS
+Configuration file
+.RE
+.I /etc/sslogger.d/sslogger-slogd.conf
+.RS
+slogd Configuration file 
+.RE
+.I /var/log/slog
+.RS
+Default directory in which sessions are logged
+.SH CONFIGURATION FILES
+.TP
+Sample entry for /etc/sslogger.d/sslogger-slogd.conf
+#Config file for slogd                            
+
+#Listen IP (Not implemented yet, currently defaults to all interfaces)
+.br
+#listen=0.0.0.0                                                       
+
+#Service Port
+port=5556    
+
+#Debug level <1-9>
+.br
+debug=0           
+
+#PID file
+.br
+pid_file=/var/run/sslogger/sslogger-slogd.pid
+
+#Certificate Authority File
+.br
+ca_file=/etc/pki/slog/CA/cacert.pem
+
+#Server key
+.br
+key_file=/etc/pki/slog/private/serverkey.pem
+
+#Server Cert
+.br
+cert_file=/etc/pki/slog/servercert.pem
+
+# Certificate Revocation List
+.br
+#   if set, it must be signed by the CA
+.br
+#crl_file=
+
+# Of the three modes below, only one can be enable at a time
+.br
+#
+.br
+# set to 1 to use tls x509 certs for authentication
+,br
+use_tls_cert=0
+.br
+# set to 1 to use anon auth
+.br
+use_tls_anon=1
+.br
+.br
+#set to 1 to use tls x509 pks 
+.br
+use_tls_pks=0
+
+# When use_tls_cert=1(true), verify the client certs were signed with same CA as slogd_server
+.br
+tls_verify_certificate=1
+
+# Verify clients certificate hostname matches client's FQDN (Not implemented yet)
+.br
+#tls_no_verify_host=0
+
+.SH EXAMPLES
+slogd -d -p /var/run/sslogger/sslogger-slogd.pid
+.br
+- Runs slogd as a daemon
+.SH BUGS
+If you feel you have found a bug in sslogger, please submit a bug report at http://sslogger.sourceforge.net
+.SH SUPPORT
+Limited free support is available via the sslogger-users mailing list, see http://sslogger.sourceforge.net to subscribe or search the archives.
+.SH AUTHOR
+Edward Brand  <ebrand@@fedoraproject.org>
+.SH SEE ALSO
+sslogger.conf(5) sslogger(8) slog(8) sreplay(8) sudo(8), sudoers(8), su(2)
+@

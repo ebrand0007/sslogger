@@ -1,0 +1,5 @@
+mkSlog-ServerCerts: will create the following files on a server
+  keyfile:  /etc/pki/slog/private/serverkey.pem
+  certfile: /etc/pki/slog/servercert.pem
+  cafile:   /etc/pki/slog/CA/cacert.pem
+

@@ -1,0 +1,227 @@
+#!/bin/sh
+#
+# Author: Ed Brand
+# Created: March 5 2009
+# Overview: Example script to generate simple signed TLS server certificate
+#
+# Requires: gnutls-utils
+#
+# This script is based off docs found at: http://libvirt.org/remote.html and the gnutls documentation 
+#
+# Generation of the self signed master CA can be found there.
+
+SLOG_TLS_CONFDIR=/etc/sslogger.d/tls
+
+function die {
+   echo $1 >&2
+   exit 1
+} 
+
+
+#Make sure user is root
+[ `id -u` -gt 0 ] && die "Error: script must be run as root"
+
+# Sanity checks
+[ ! -w ${SLOG_TLS_CONFDIR} ] && die "Error: Cannot write to $SLOG_TLS_CONFDIR"
+[ ! -w ${SLOG_TLS_CONFDIR} ] && die "Error: Cannot write to $SLOG_TLS_CONFDIR/private"
+[ ! -w ${SLOG_TLS_CONFDIR} ] && die "Error: Cannot write to $SLOG_TLS_CONFDIR/servers"
+
+
+
+###################################################
+#Check if CA is set up
+###################################################
+if [ ! -r $SLOG_TLS_CONFDIR/private/cakey.pem ]
+then
+  echo "No CA set up. Creating self signed CA"
+  mkdir -p $SLOG_TLS_CONFDIR/private/ 
+  echo -ne "Enter company name: "
+  read COMPANY
+  [ -z "${COMPANY}" ] && die "Error: Company name required"
+
+  echo -ne "Enter org unit within ${COMPANY}: "
+  read COMPANY_OU
+  [ -z "${COMPANY_OU}" ] && die "Error: Company OU name required"
+
+  # Create a private key for your CA cakey.pem (keep secret)
+  certtool --generate-privkey > $SLOG_TLS_CONFDIR/private/cakey.pem
+  chmod 440 $SLOG_TLS_CONFDIR/private/cakey.pem
+
+cat << _EOT > $SLOG_TLS_CONFDIR/private/ca.info
+# X.509 Certificate options
+#
+# DN options
+
+# The organization of the subject.
+organization = "$COMPANY"
+
+# The organizational unit of the subject.
+unit = "${COMPANY_OU}"
+
+# The locality of the subject.
+# locality =
+
+# The state of the certificate owner.
+# state = "Attiki"
+
+# The country of the subject. Two letter code.
+# country = GR
+
+# The common name of the certificate owner.
+cn = "$COMPANY"
+
+# A user id of the certificate owner.
+#uid = "clauper"
+
+# If the supported DN OIDs are not adequate you can set
+# any OID here.
+# For example set the X.520 Title and the X.520 Pseudonym
+# by using OID and string pairs.
+#dn_oid = "2.5.4.12" "Dr." "2.5.4.65" "jackal"
+
+# This is deprecated and should not be used in new
+# certificates.
+# pkcs9_email = "none@none.org"
+
+# The serial number of the certificate
+serial = 001
+
+# In how many days, counting from today, this certificate will expire.
+expiration_days = 1000
+
+# X.509 v3 extensions
+
+# A dnsname in case of a WWW server.
+#dns_name = "www.none.org"
+#dns_name = "www.morethanone.org"
+
+# An IP address in case of a server.
+#ip_address = "192.168.1.1"
+
+# An email in case of a person
+# email = "none@none.org"
+
+# An URL that has CRLs (certificate revocation lists)
+# available. Needed in CA certificates.
+#crl_dist_points = "http://www.getcrl.crl/getcrl/"
+
+# Whether this is a CA certificate or not
+ca
+
+# Whether this certificate will be used for a TLS client
+#tls_www_client
+
+# Whether this certificate will be used for a TLS server
+#tls_www_server
+
+# Whether this certificate will be used to sign data (needed
+# in TLS DHE ciphersuites).
+signing_key
+
+# Whether this certificate will be used to encrypt data (needed
+# in TLS RSA ciphersuites). Note that it is prefered to use different
+# keys for encryption and signing.
+#encryption_key
+
+# Whether this key will be used to sign other certificates.
+cert_signing_key
+
+# Whether this key will be used to sign CRLs.
+#crl_signing_key
+
+# Whether this key will be used to sign code.
+#code_signing_key
+
+# Whether this key will be used to sign OCSP data.
+#ocsp_signing_key
+
+# Whether this key will be used for time stamping.
+#time_stamping_key
+_EOT
+
+  echo "COMPANY=\"$COMPANY\"" > $SLOG_TLS_CONFDIR/private/ca.txt
+
+  # Create the CA's certificate cacert.pem (this is public)
+  certtool --generate-self-signed --load-privkey $SLOG_TLS_CONFDIR/private/cakey.pem \
+  --template $SLOG_TLS_CONFDIR/private/ca.info --outfile $SLOG_TLS_CONFDIR/private/cacert.pem
+else
+  # CA is set up, source the config
+  . $SLOG_TLS_CONFDIR/private/ca.txt 
+fi
+
+###################################################
+# Show info about Certificate Authority (CA)
+###################################################
+echo "Certificate Authority (CA):"
+certtool -i --infile $SLOG_TLS_CONFDIR/private/cacert.pem
+echo
+echo
+sleep 2
+
+###################################################
+# Gather Input for server
+###################################################
+
+#prompt for server and server.fqdn
+echo -ne "Enter short hostname: "
+read SERVER
+
+[ -z "${SERVER}" ] && die "Error: Server name required"
+
+
+
+###################################################
+# Generate the server cert/key
+###################################################
+if [ ! -r $SLOG_TLS_CONFDIR/servers/$SERVER/servercert.pem ]
+then 
+    echo "Generating Slogd server certificate for $SERVER"
+    #---------------------------------
+    #Per server certificates:
+    #---------------------------------
+    mkdir -p $SLOG_TLS_CONFDIR/servers/$SERVER
+    certtool --generate-privkey > $SLOG_TLS_CONFDIR/servers/$SERVER/serverkey.pem
+
+#generate the server.info file
+cat << _EOT > $SLOG_TLS_CONFDIR/servers/$SERVER/server.info
+organization = "$COMPANY"
+cn = "$SERVER"
+tls_www_server
+encryption_key
+signing_key
+_EOT
+
+#sign the CA cert pair
+    certtool --generate-certificate --load-privkey $SLOG_TLS_CONFDIR/servers/$SERVER/serverkey.pem \
+  --load-ca-certificate $SLOG_TLS_CONFDIR/private/cacert.pem --load-ca-privkey $SLOG_TLS_CONFDIR/private/cakey.pem \
+  --template $SLOG_TLS_CONFDIR/servers/$SERVER/server.info --outfile $SLOG_TLS_CONFDIR/servers/$SERVER/servercert.pem
+fi
+
+
+
+echo "Certificate generation complete, copying certs to $SERVER"
+echo
+echo
+
+
+###################################################
+# Now copy generated files to client/servers
+###################################################
+
+#Install cacert.pem on all clients and servers:
+echo
+echo "Copying $SLOG_TLS_CONFDIR/private/cacert.pem to $SERVER:/etc/pki/slog/CA/."
+scp $SLOG_TLS_CONFDIR/private/cacert.pem root@$SERVER:/etc/pki/slog/CA/.
+
+
+#install the servers private key:
+echo
+echo "Copying new private key: $SLOG_TLS_CONFDIR/servers/$SERVER/serverkey.pem to $SERVER:/etc/pki/slog/private/serverkey.pem"
+scp $SLOG_TLS_CONFDIR/servers/$SERVER/serverkey.pem root@$SERVER:/etc/pki/slog/private/serverkey.pem
+
+echo "Copy new server certificate: $SLOG_TLS_CONFDIR/servers/$SERVER/servercert.pem to $SERVER:/etc/pki/slog/servercert.pem"
+#install the server's server certificate:
+scp $SLOG_TLS_CONFDIR/servers/$SERVER/servercert.pem root@$SERVER:/etc/pki/slog/servercert.pem
+echo
+
+echo "Done"

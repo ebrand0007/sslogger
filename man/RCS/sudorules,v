@@ -1,0 +1,46 @@
+head	1.1;
+access;
+symbols;
+locks
+	ebrand:1.1; strict;
+comment	@# @;
+
+
+1.1
+date	2010.02.15.01.12.35;	author ebrand;	state Exp;
+branches;
+next	;
+
+
+desc
+@before deleating from code
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@Slog is a shortcut to running the command sudo [-u user] sslogger <cmd and args>
+
+or root
+slog
+sudo -u root sslogger 
+
+
+slog -u testy ls -la
+sudo -u testy sslogger -c 'ls -la'
+
+
+#Allow user user1 to run any command, or open shell users: root,testy
+user1 ALL=(root,testy) NOPASSWD:/usr/bin/sslogger
+
+# allow user1 to run ls as testy2
+user1 ALL=(testy2) NOPASSWD:/usr/bin/sslogger -c ls, /usr/bin/sslogger -c ls *
+
+
+#Allow users in group unix group wheel to run any sslogger command as root
+#%wheel ALL=(root) NOPASSWD:/usr/bin/sslogger
+
+@
